@@ -1,0 +1,3833 @@
+{
+  "name": "",
+  "tagType": "Provider",
+  "tags": [
+    {
+      "name": "nest",
+      "tagType": "Folder"
+    },
+    {
+      "name": "opensky",
+      "tagType": "Folder",
+      "tags": [
+        {
+          "valueSource": "memory",
+          "dataType": "DateTime",
+          "name": "LastQueryDateTime",
+          "formatString": "yyyy-MM-dd h:mm:ss aa",
+          "value": 1745341116099,
+          "tagType": "AtomicTag"
+        },
+        {
+          "valueSource": "expr",
+          "eventScripts": [
+            {
+              "eventid": "valueChanged",
+              "script": "\tlamin \u003d 35.0000\n\tlomin \u003d -79.0000\n\tlamax \u003d 36.0000\n\tlomax \u003d -78.0000\n\t\n\ttry:\n\t\tarea_data \u003d opensky.functions.query_area(lamin, lomin, lamax, lomax)\n\t\tsystem.tag.writeBlocking([\u0027[default]opensky/LastQueryDateTime\u0027], system.date.now())\n\t\tdata \u003d []\n\t\tfor state in area_data[\u0027states\u0027]:\n\t\t    data.append({\u0027CallSign\u0027: state[1], \"latitude\": state[6], \"longitude\":state[5], \u0027true_track\u0027: state[10]})\n\t\t \n\t\tif area_data:\n\t\t\tsystem.tag.writeBlocking([\u0027[default]opensky/flightData\u0027], [system.util.jsonEncode(data)])\n\t\t\tsystem.tag.writeBlocking([\u0027[default]opensky/Connected\u0027], [1])\n\t\telse:\n\t\t\tsystem.tag.writeBlocking([\u0027[default]opensky/Connected\u0027], [0])\n\texcept:\n\t\tsystem.tag.writeBlocking([\u0027[default]opensky/Connected\u0027], [0])"
+            }
+          ],
+          "expression": "now(600000)",
+          "dataType": "DateTime",
+          "name": "Refresh600s",
+          "formatString": "yyyy-MM-dd h:mm:ss aa",
+          "executionMode": "EventDriven",
+          "executionRate": 5000,
+          "tagType": "AtomicTag",
+          "enabled": true
+        },
+        {
+          "name": "flightQueue",
+          "tagType": "Folder",
+          "tags": [
+            {
+              "valueSource": "memory",
+              "eventScripts": [
+                {
+                  "eventid": "valueChanged",
+                  "script": "\tif currentValue.value \u003d\u003d True:\n\t\tflightDataQueue \u003d system.util.getGlobals()[\u0027flightDataQueue\u0027]\n\t\t\n\t\t# Clear the queue by dequeuing all items\n\t\twhile not flightDataQueue.empty():\n\t\t    flightDataQueue.get_nowait()\n\t\t    flightDataQueue.task_done()\n\t\t   \n\t\t# reset itself as acknowledgement\n\t\tsystem.tag.writeBlocking([tagPath], [0])"
+                }
+              ],
+              "dataType": "Boolean",
+              "name": "emptyQueue",
+              "value": false,
+              "tagType": "AtomicTag"
+            },
+            {
+              "name": "data",
+              "tagType": "Folder",
+              "tags": [
+                {
+                  "valueSource": "memory",
+                  "dataType": "Float4",
+                  "name": "longitude",
+                  "value": -78.393,
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "valueSource": "memory",
+                  "dataType": "Float4",
+                  "name": "latitude",
+                  "value": 35.5376,
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "valueSource": "memory",
+                  "dataType": "String",
+                  "name": "CallSign",
+                  "value": "N469BL  ",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "valueSource": "memory",
+                  "dataType": "Float4",
+                  "name": "true_track",
+                  "value": 200.42,
+                  "tagType": "AtomicTag"
+                }
+              ]
+            },
+            {
+              "valueSource": "memory",
+              "eventScripts": [
+                {
+                  "eventid": "valueChanged",
+                  "script": "\tif currentValue.value \u003d\u003d True:\n\t\tflightData \u003d system.tag.readBlocking(\"[.]../flightData\")[0].value\n\t\t\n\t\tif flightData:\n\t\t\tflightDataQueue \u003d system.util.getGlobals()[\u0027flightDataQueue\u0027]\n\t\t\tfor item in flightData:\n\t\t\t\tflightDataQueue.put_nowait(item)\n\t\t\n\t\tsystem.tag.writeBlocking([tagPath], [0])"
+                }
+              ],
+              "dataType": "Boolean",
+              "name": "queuing",
+              "value": false,
+              "tagType": "AtomicTag"
+            },
+            {
+              "valueSource": "expr",
+              "expression": "len({[.]../flightData})",
+              "dataType": "Int4",
+              "name": "currentLoggingSize",
+              "tagType": "AtomicTag"
+            },
+            {
+              "valueSource": "memory",
+              "historyTimeDeadband": 1,
+              "historyMaxAge": 2,
+              "historicalDeadbandMode": "Off",
+              "historicalDeadband": 0.0,
+              "tagType": "AtomicTag",
+              "dataType": "String",
+              "historyProvider": "db_liewfam",
+              "historyMaxAgeUnits": "MIN",
+              "name": "singleFlightData",
+              "historyEnabled": true,
+              "value": "{\n    \"CallSign\": \"N364CP  \",\n    \"latitude\": 35.7369,\n    \"true_track\": 316.14,\n    \"longitude\": -78.8808\n}"
+            },
+            {
+              "valueSource": "expr",
+              "eventScripts": [
+                {
+                  "eventid": "valueChanged",
+                  "script": "\tqsize \u003d system.tag.readBlocking(\u0027[default]opensky/flightQueue/size\u0027)[0].value\n\t\n\tif qsize \u003e 0:\n\t\tflightDataQueue \u003d system.util.getGlobals()[\u0027flightDataQueue\u0027]\n\t\tdata \u003d flightDataQueue.get_nowait()\n\t\tsystem.tag.writeBlocking([\"[.]singleFlightData\"], [data])"
+                }
+              ],
+              "expression": "now(1000)",
+              "dataType": "DateTime",
+              "name": "periodicGetFromQueue",
+              "formatString": "yyyy-MM-dd h:mm:ss aa",
+              "tagType": "AtomicTag"
+            },
+            {
+              "valueSource": "expr",
+              "expression": "runScript(\u0027opensky.queue.size\u0027)",
+              "name": "size",
+              "executionMode": "FixedRate",
+              "value": 0,
+              "tagType": "AtomicTag"
+            }
+          ]
+        },
+        {
+          "valueSource": "memory",
+          "historyTimeDeadband": 1,
+          "historicalDeadbandMode": "Off",
+          "tagType": "AtomicTag",
+          "eventScripts": [
+            {
+              "eventid": "valueChanged",
+              "script": "\tif currentValue.value and not initialChange:\n\t\tsystem.tag.writeBlocking([\"[.]flightQueue/queuing\"], [1])"
+            }
+          ],
+          "dataType": "Document",
+          "historyProvider": "db_liewfam",
+          "name": "flightData",
+          "historyEnabled": false,
+          "value": [
+            {
+              "CallSign": "ZEUS11  ",
+              "latitude": 35.8134,
+              "true_track": 124.63,
+              "longitude": -78.7321
+            },
+            {
+              "CallSign": "SKYY5   ",
+              "latitude": 35.7468,
+              "true_track": 270,
+              "longitude": -78.5926
+            },
+            {
+              "CallSign": "SWA1422 ",
+              "latitude": 35.8853,
+              "true_track": 225.6,
+              "longitude": -78.772
+            },
+            {
+              "CallSign": "N242BL  ",
+              "latitude": 35.5519,
+              "true_track": 28.16,
+              "longitude": -78.3591
+            },
+            {
+              "CallSign": "N811BL  ",
+              "latitude": 35.5223,
+              "true_track": 112.15,
+              "longitude": -78.3212
+            },
+            {
+              "CallSign": "N299PA  ",
+              "latitude": 35.5195,
+              "true_track": 205.51,
+              "longitude": -78.5778
+            },
+            {
+              "CallSign": "N8328D  ",
+              "latitude": 35.7899,
+              "true_track": 51.52,
+              "longitude": -78.3173
+            },
+            {
+              "CallSign": "FTK3    ",
+              "latitude": 35.0977,
+              "true_track": 116.15,
+              "longitude": -78.2355
+            },
+            {
+              "CallSign": "N407KV  ",
+              "latitude": 35.4154,
+              "true_track": 156.19,
+              "longitude": -78.4528
+            },
+            {
+              "CallSign": "N872CP  ",
+              "latitude": 35.0541,
+              "true_track": 199.7,
+              "longitude": -78.2942
+            },
+            {
+              "CallSign": "TSC845  ",
+              "latitude": 35.0133,
+              "true_track": 37.77,
+              "longitude": -78.1304
+            },
+            {
+              "CallSign": "20404   ",
+              "latitude": 35.2925,
+              "true_track": 218.66,
+              "longitude": -78.8849
+            },
+            {
+              "CallSign": "LXJ376  ",
+              "latitude": 35.5161,
+              "true_track": 188.87,
+              "longitude": -78.8836
+            },
+            {
+              "CallSign": "N422BL  ",
+              "latitude": 35.4605,
+              "true_track": 289.91,
+              "longitude": -78.3037
+            },
+            {
+              "CallSign": "N996FG  ",
+              "latitude": 35.5946,
+              "true_track": 50.53,
+              "longitude": -78.8038
+            },
+            {
+              "CallSign": "N889SK  ",
+              "latitude": 35.0132,
+              "true_track": 211.46,
+              "longitude": -78.8657
+            },
+            {
+              "CallSign": "LUNAR46 ",
+              "latitude": 35.8585,
+              "true_track": 133.51,
+              "longitude": -78.7753
+            },
+            {
+              "CallSign": "AAL2353 ",
+              "latitude": 35.2734,
+              "true_track": 27.1,
+              "longitude": -78.7177
+            },
+            {
+              "CallSign": "AAL2128 ",
+              "latitude": 35.7539,
+              "true_track": 27.22,
+              "longitude": -78.4154
+            },
+            {
+              "CallSign": "N3550T  ",
+              "latitude": 35.7929,
+              "true_track": 279.64,
+              "longitude": -78.3804
+            },
+            {
+              "CallSign": "N374BL  ",
+              "latitude": 35.7381,
+              "true_track": 203.03,
+              "longitude": -78.2855
+            },
+            {
+              "CallSign": "CAP3219 ",
+              "latitude": 35.0142,
+              "true_track": 208.69,
+              "longitude": -78.865
+            },
+            {
+              "CallSign": "",
+              "latitude": 35.5335,
+              "true_track": 196.96,
+              "longitude": -78.3939
+            },
+            {
+              "CallSign": "N810JP  ",
+              "latitude": 35.5396,
+              "true_track": 246.73,
+              "longitude": -78.0049
+            },
+            {
+              "CallSign": "R33508  ",
+              "latitude": 35.5707,
+              "true_track": 180,
+              "longitude": -78.9414
+            },
+            {
+              "CallSign": "N912BL  ",
+              "latitude": 35.5457,
+              "true_track": 316.85,
+              "longitude": -78.2247
+            },
+            {
+              "CallSign": "N364CP  ",
+              "latitude": 35.7369,
+              "true_track": 316.14,
+              "longitude": -78.8808
+            }
+          ],
+          "sampleMode": "Periodic",
+          "historySampleRate": 60
+        },
+        {
+          "valueSource": "memory",
+          "dataType": "Boolean",
+          "name": "Connected",
+          "value": true,
+          "tagType": "AtomicTag"
+        }
+      ]
+    },
+    {
+      "name": "playground",
+      "tagType": "Folder",
+      "tags": [
+        {
+          "name": "iaq_temperature",
+          "tagType": "Folder",
+          "tags": [
+            {
+              "valueSource": "memory",
+              "dataType": "String",
+              "name": "Unit",
+              "value": "F",
+              "tagType": "AtomicTag"
+            },
+            {
+              "valueSource": "memory",
+              "dataType": "Float4",
+              "name": "value",
+              "value": 80.46,
+              "tagType": "AtomicTag"
+            },
+            {
+              "valueSource": "memory",
+              "dataType": "String",
+              "name": "status",
+              "value": "Moderate",
+              "tagType": "AtomicTag"
+            }
+          ]
+        },
+        {
+          "valueSource": "memory",
+          "dataType": "Boolean",
+          "name": "notify_contact",
+          "value": false,
+          "tagType": "AtomicTag"
+        },
+        {
+          "valueSource": "memory",
+          "dataType": "Float4",
+          "name": "end_of_life_status",
+          "value": 1.0,
+          "tagType": "AtomicTag"
+        },
+        {
+          "valueSource": "memory",
+          "dataType": "Boolean",
+          "name": "notify_mold_risk",
+          "value": true,
+          "tagType": "AtomicTag"
+        },
+        {
+          "valueSource": "memory",
+          "dataType": "Boolean",
+          "name": "iaq_test_status",
+          "value": true,
+          "tagType": "AtomicTag"
+        },
+        {
+          "valueSource": "memory",
+          "dataType": "Boolean",
+          "name": "locate_active",
+          "value": false,
+          "tagType": "AtomicTag"
+        },
+        {
+          "valueSource": "memory",
+          "dataType": "String",
+          "name": "iaq_state",
+          "value": "Normal",
+          "tagType": "AtomicTag"
+        },
+        {
+          "valueSource": "memory",
+          "dataType": "Boolean",
+          "name": "smoke_hushed",
+          "value": false,
+          "tagType": "AtomicTag"
+        },
+        {
+          "valueSource": "memory",
+          "dataType": "Float4",
+          "name": "location_id",
+          "value": 341315.0,
+          "tagType": "AtomicTag"
+        },
+        {
+          "valueSource": "memory",
+          "dataType": "Float4",
+          "name": "smoke_level",
+          "value": 6.0,
+          "tagType": "AtomicTag"
+        },
+        {
+          "valueSource": "memory",
+          "dataType": "Float4",
+          "name": "temperature_f",
+          "value": 83.0,
+          "tagType": "AtomicTag"
+        },
+        {
+          "valueSource": "memory",
+          "dataType": "String",
+          "name": "serial_number",
+          "value": "0813814BB147",
+          "tagType": "AtomicTag"
+        },
+        {
+          "name": "errors",
+          "tagType": "Folder"
+        },
+        {
+          "valueSource": "memory",
+          "dataType": "Boolean",
+          "name": "notify_eol",
+          "value": true,
+          "tagType": "AtomicTag"
+        },
+        {
+          "valueSource": "memory",
+          "dataType": "Boolean",
+          "name": "notify",
+          "value": true,
+          "tagType": "AtomicTag"
+        },
+        {
+          "valueSource": "memory",
+          "dataType": "String",
+          "name": "ptt_state",
+          "value": "idle",
+          "tagType": "AtomicTag"
+        },
+        {
+          "name": "hpa",
+          "tagType": "Folder",
+          "tags": [
+            {
+              "valueSource": "memory",
+              "dataType": "Float4",
+              "name": "value",
+              "value": 101359.0,
+              "tagType": "AtomicTag"
+            },
+            {
+              "valueSource": "memory",
+              "dataType": "String",
+              "name": "status",
+              "value": "Unhealthy",
+              "tagType": "AtomicTag"
+            },
+            {
+              "valueSource": "memory",
+              "dataType": "String",
+              "name": "Unit",
+              "value": "hpa",
+              "tagType": "AtomicTag"
+            }
+          ]
+        },
+        {
+          "valueSource": "memory",
+          "dataType": "Boolean",
+          "name": "notify_iaq_temp",
+          "value": true,
+          "tagType": "AtomicTag"
+        },
+        {
+          "valueSource": "memory",
+          "dataType": "Boolean",
+          "name": "weather_active",
+          "value": false,
+          "tagType": "AtomicTag"
+        },
+        {
+          "valueSource": "memory",
+          "dataType": "String",
+          "name": "model",
+          "value": "wifiiaqdetector",
+          "tagType": "AtomicTag"
+        },
+        {
+          "valueSource": "memory",
+          "dataType": "Boolean",
+          "name": "reset_flag",
+          "value": false,
+          "tagType": "AtomicTag"
+        },
+        {
+          "valueSource": "memory",
+          "dataType": "Boolean",
+          "name": "ptt_active",
+          "value": false,
+          "tagType": "AtomicTag"
+        },
+        {
+          "valueSource": "memory",
+          "dataType": "Float4",
+          "name": "batt_volt",
+          "value": 0.0,
+          "tagType": "AtomicTag"
+        },
+        {
+          "name": "capabilities",
+          "tagType": "Folder",
+          "tags": [
+            {
+              "valueSource": "memory",
+              "dataType": "String",
+              "name": "2",
+              "value": "temperature",
+              "tagType": "AtomicTag"
+            },
+            {
+              "valueSource": "memory",
+              "dataType": "String",
+              "name": "0",
+              "value": "smoke",
+              "tagType": "AtomicTag"
+            },
+            {
+              "valueSource": "memory",
+              "dataType": "String",
+              "name": "1",
+              "value": "co",
+              "tagType": "AtomicTag"
+            }
+          ]
+        },
+        {
+          "name": "diag_params",
+          "tagType": "Folder",
+          "tags": [
+            {
+              "valueSource": "memory",
+              "dataType": "Float4",
+              "name": "ap_rssi",
+              "value": -50.0,
+              "tagType": "AtomicTag"
+            }
+          ]
+        },
+        {
+          "valueSource": "memory",
+          "dataType": "Boolean",
+          "name": "notify_tvoc",
+          "value": true,
+          "tagType": "AtomicTag"
+        },
+        {
+          "valueSource": "memory",
+          "dataType": "String",
+          "name": "instance_id",
+          "value": "e453a37717",
+          "tagType": "AtomicTag"
+        },
+        {
+          "valueSource": "memory",
+          "dataType": "Boolean",
+          "name": "co_alarm",
+          "value": false,
+          "tagType": "AtomicTag"
+        },
+        {
+          "valueSource": "memory",
+          "dataType": "Boolean",
+          "name": "motion_active",
+          "value": false,
+          "tagType": "AtomicTag"
+        },
+        {
+          "valueSource": "memory",
+          "dataType": "Float4",
+          "name": "smoke_comp",
+          "value": 0.0,
+          "tagType": "AtomicTag"
+        },
+        {
+          "valueSource": "memory",
+          "dataType": "Float4",
+          "name": "iaq_learn_countdown",
+          "value": 0.0,
+          "tagType": "AtomicTag"
+        },
+        {
+          "valueSource": "memory",
+          "dataType": "Boolean",
+          "name": "too_much_smoke",
+          "value": false,
+          "tagType": "AtomicTag"
+        },
+        {
+          "valueSource": "memory",
+          "dataType": "String",
+          "name": "ssid",
+          "value": "LiewFam",
+          "tagType": "AtomicTag"
+        },
+        {
+          "valueSource": "memory",
+          "dataType": "Float4",
+          "name": "temperature",
+          "value": 83.0,
+          "tagType": "AtomicTag"
+        },
+        {
+          "valueSource": "memory",
+          "dataType": "String",
+          "name": "announcement",
+          "value": "Guest Bedroom",
+          "tagType": "AtomicTag"
+        },
+        {
+          "valueSource": "memory",
+          "dataType": "Float4",
+          "name": "id",
+          "value": 515476.0,
+          "tagType": "AtomicTag"
+        },
+        {
+          "valueSource": "memory",
+          "dataType": "String",
+          "name": "battery_state",
+          "value": "ok",
+          "tagType": "AtomicTag"
+        },
+        {
+          "valueSource": "memory",
+          "dataType": "String",
+          "name": "iaq_last_test_time",
+          "value": "2024-02-07T16:09:32Z",
+          "tagType": "AtomicTag"
+        },
+        {
+          "valueSource": "memory",
+          "dataType": "String",
+          "name": "overall_iaq_status",
+          "value": "Bad",
+          "tagType": "AtomicTag"
+        },
+        {
+          "valueSource": "memory",
+          "dataType": "Float4",
+          "name": "ap_rssi",
+          "value": -50.0,
+          "tagType": "AtomicTag"
+        },
+        {
+          "valueSource": "memory",
+          "dataType": "String",
+          "name": "last_seen",
+          "value": "2024-02-08T14:58:14.4499768Z",
+          "tagType": "AtomicTag"
+        },
+        {
+          "valueSource": "memory",
+          "dataType": "Boolean",
+          "name": "smoke_alarm",
+          "value": false,
+          "tagType": "AtomicTag"
+        },
+        {
+          "name": "fwrev",
+          "tagType": "Folder",
+          "tags": [
+            {
+              "valueSource": "memory",
+              "dataType": "String",
+              "name": "wm",
+              "value": "2.5",
+              "tagType": "AtomicTag"
+            },
+            {
+              "valueSource": "memory",
+              "dataType": "String",
+              "name": "net",
+              "value": "4.4.1",
+              "tagType": "AtomicTag"
+            },
+            {
+              "valueSource": "memory",
+              "dataType": "String",
+              "name": "alarm",
+              "value": "1.9",
+              "tagType": "AtomicTag"
+            }
+          ]
+        },
+        {
+          "valueSource": "memory",
+          "dataType": "Float4",
+          "name": "longitude",
+          "value": 0.0,
+          "tagType": "AtomicTag"
+        },
+        {
+          "valueSource": "memory",
+          "dataType": "Float4",
+          "name": "mb_model",
+          "value": 38.0,
+          "tagType": "AtomicTag"
+        },
+        {
+          "valueSource": "memory",
+          "dataType": "String",
+          "name": "label",
+          "value": "Smoke - GB",
+          "tagType": "AtomicTag"
+        },
+        {
+          "valueSource": "memory",
+          "dataType": "String",
+          "name": "hwrev",
+          "value": "WD-ESP32",
+          "tagType": "AtomicTag"
+        },
+        {
+          "valueSource": "memory",
+          "dataType": "Float4",
+          "name": "accuracy",
+          "value": 0.0,
+          "tagType": "AtomicTag"
+        },
+        {
+          "valueSource": "memory",
+          "dataType": "Float4",
+          "name": "latitude",
+          "value": 0.0,
+          "tagType": "AtomicTag"
+        },
+        {
+          "valueSource": "memory",
+          "dataType": "Float4",
+          "name": "life",
+          "value": 524.0,
+          "tagType": "AtomicTag"
+        },
+        {
+          "name": "iaq",
+          "tagType": "Folder",
+          "tags": [
+            {
+              "valueSource": "memory",
+              "dataType": "String",
+              "name": "status",
+              "value": "Good",
+              "tagType": "AtomicTag"
+            },
+            {
+              "valueSource": "memory",
+              "dataType": "String",
+              "name": "Unit",
+              "value": "",
+              "tagType": "AtomicTag"
+            },
+            {
+              "valueSource": "memory",
+              "dataType": "Float4",
+              "name": "value",
+              "value": 66.79,
+              "tagType": "AtomicTag"
+            }
+          ]
+        },
+        {
+          "valueSource": "memory",
+          "dataType": "Boolean",
+          "name": "lost",
+          "value": false,
+          "tagType": "AtomicTag"
+        },
+        {
+          "name": "humidity",
+          "tagType": "Folder",
+          "tags": [
+            {
+              "valueSource": "memory",
+              "dataType": "String",
+              "name": "status",
+              "value": "Bad",
+              "tagType": "AtomicTag"
+            },
+            {
+              "valueSource": "memory",
+              "dataType": "String",
+              "name": "Unit",
+              "value": "%RH",
+              "tagType": "AtomicTag"
+            },
+            {
+              "valueSource": "memory",
+              "dataType": "Float4",
+              "name": "value",
+              "value": 22.14,
+              "tagType": "AtomicTag"
+            }
+          ]
+        },
+        {
+          "name": "co2",
+          "tagType": "Folder",
+          "tags": [
+            {
+              "valueSource": "memory",
+              "dataType": "String",
+              "name": "Unit",
+              "value": "PPM",
+              "tagType": "AtomicTag"
+            },
+            {
+              "valueSource": "memory",
+              "dataType": "String",
+              "name": "status",
+              "value": "Good",
+              "tagType": "AtomicTag"
+            },
+            {
+              "valueSource": "memory",
+              "dataType": "Float4",
+              "name": "value",
+              "value": 667.87,
+              "tagType": "AtomicTag"
+            }
+          ]
+        },
+        {
+          "name": "tvoc",
+          "tagType": "Folder",
+          "tags": [
+            {
+              "valueSource": "memory",
+              "dataType": "Float4",
+              "name": "value",
+              "value": 367.3,
+              "tagType": "AtomicTag"
+            },
+            {
+              "valueSource": "memory",
+              "dataType": "String",
+              "name": "status",
+              "value": "Good",
+              "tagType": "AtomicTag"
+            },
+            {
+              "valueSource": "memory",
+              "dataType": "String",
+              "name": "Unit",
+              "value": "ppb",
+              "tagType": "AtomicTag"
+            }
+          ]
+        },
+        {
+          "valueSource": "memory",
+          "dataType": "Boolean",
+          "name": "identifying",
+          "value": false,
+          "tagType": "AtomicTag"
+        },
+        {
+          "valueSource": "memory",
+          "dataType": "String",
+          "name": "country_code",
+          "value": "US",
+          "tagType": "AtomicTag"
+        },
+        {
+          "valueSource": "memory",
+          "dataType": "Boolean",
+          "name": "notify_rh",
+          "value": true,
+          "tagType": "AtomicTag"
+        },
+        {
+          "valueSource": "memory",
+          "dataType": "Float4",
+          "name": "altitude",
+          "value": 0.0,
+          "tagType": "AtomicTag"
+        },
+        {
+          "valueSource": "memory",
+          "dataType": "Float4",
+          "name": "co_level",
+          "value": 0.0,
+          "tagType": "AtomicTag"
+        }
+      ]
+    },
+    {
+      "name": "zzPlayground",
+      "tagType": "Folder",
+      "tags": [
+        {
+          "valueSource": "memory",
+          "dataType": "Document",
+          "name": "flightData",
+          "value": {
+            "states": [
+              {
+                "callsign": "UAL1785",
+                "lat": 35.92371,
+                "lo": -78.772116
+              },
+              {
+                "callsign": "AAL549",
+                "lat": 35.904809,
+                "lo": -78.722741
+              },
+              {
+                "callsign": "DL335",
+                "lat": 35.850965,
+                "lo": -78.843844
+              },
+              {
+                "callsign": "DL325",
+                "lat": 35.870965,
+                "lo": -78.833844
+              },
+              {
+                "callsign": "DL535",
+                "lat": 35.880965,
+                "lo": -78.863844
+              }
+            ]
+          },
+          "tagType": "AtomicTag"
+        }
+      ]
+    },
+    {
+      "name": "_types_",
+      "tagType": "Folder",
+      "tags": [
+        {
+          "name": "kidde_sensor",
+          "parameters": {
+            "sensorNum": {
+              "dataType": "Integer",
+              "value": 0
+            }
+          },
+          "tagType": "UdtType",
+          "tags": [
+            {
+              "valueSource": "memory",
+              "dataType": "Float4",
+              "name": "accuracy",
+              "value": 0.0,
+              "tagType": "AtomicTag"
+            },
+            {
+              "name": "tvoc",
+              "tagType": "Folder",
+              "tags": [
+                {
+                  "valueSource": "memory",
+                  "dataType": "Float4",
+                  "historyProvider": "db_liewfam",
+                  "name": "value",
+                  "historyEnabled": true,
+                  "value": 367.3,
+                  "tagType": "AtomicTag",
+                  "sampleMode": "TagGroup"
+                },
+                {
+                  "valueSource": "memory",
+                  "dataType": "String",
+                  "name": "Unit",
+                  "value": "ppb",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "valueSource": "memory",
+                  "dataType": "String",
+                  "name": "status",
+                  "value": "Good",
+                  "tagType": "AtomicTag"
+                }
+              ]
+            },
+            {
+              "valueSource": "memory",
+              "dataType": "Boolean",
+              "name": "notify",
+              "value": true,
+              "tagType": "AtomicTag"
+            },
+            {
+              "valueSource": "memory",
+              "dataType": "Float4",
+              "name": "life",
+              "value": 524.0,
+              "tagType": "AtomicTag"
+            },
+            {
+              "name": "fwrev",
+              "tagType": "Folder",
+              "tags": [
+                {
+                  "valueSource": "memory",
+                  "dataType": "String",
+                  "name": "wm",
+                  "value": "2.5",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "valueSource": "memory",
+                  "dataType": "String",
+                  "name": "net",
+                  "value": "4.4.1",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "valueSource": "memory",
+                  "dataType": "String",
+                  "name": "alarm",
+                  "value": "1.9",
+                  "tagType": "AtomicTag"
+                }
+              ]
+            },
+            {
+              "valueSource": "memory",
+              "dataType": "Boolean",
+              "name": "notify_mold_risk",
+              "value": true,
+              "tagType": "AtomicTag"
+            },
+            {
+              "valueSource": "memory",
+              "dataType": "String",
+              "name": "iaq_state",
+              "value": "Normal",
+              "tagType": "AtomicTag"
+            },
+            {
+              "valueSource": "memory",
+              "dataType": "Boolean",
+              "name": "iaq_test_status",
+              "value": true,
+              "tagType": "AtomicTag"
+            },
+            {
+              "valueSource": "memory",
+              "dataType": "Float4",
+              "name": "altitude",
+              "value": 0.0,
+              "tagType": "AtomicTag"
+            },
+            {
+              "valueSource": "memory",
+              "dataType": "Float4",
+              "name": "latitude",
+              "value": 0.0,
+              "tagType": "AtomicTag"
+            },
+            {
+              "valueSource": "memory",
+              "dataType": "Float4",
+              "name": "iaq_learn_countdown",
+              "value": 0.0,
+              "tagType": "AtomicTag"
+            },
+            {
+              "name": "iaq_temperature",
+              "tagType": "Folder",
+              "tags": [
+                {
+                  "valueSource": "memory",
+                  "historyTimeDeadband": 30,
+                  "dataType": "Float4",
+                  "historyProvider": "db_liewfam",
+                  "name": "value",
+                  "historyEnabled": true,
+                  "value": 80.46,
+                  "tagType": "AtomicTag",
+                  "sampleMode": "TagGroup"
+                },
+                {
+                  "valueSource": "memory",
+                  "dataType": "String",
+                  "name": "Unit",
+                  "value": "F",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "valueSource": "memory",
+                  "dataType": "String",
+                  "name": "status",
+                  "value": "Moderate",
+                  "tagType": "AtomicTag"
+                }
+              ]
+            },
+            {
+              "valueSource": "memory",
+              "dataType": "String",
+              "name": "last_seen",
+              "value": "2024-02-08T14:58:14.4499768Z",
+              "tagType": "AtomicTag"
+            },
+            {
+              "valueSource": "memory",
+              "dataType": "Boolean",
+              "name": "notify_rh",
+              "value": true,
+              "tagType": "AtomicTag"
+            },
+            {
+              "valueSource": "memory",
+              "dataType": "String",
+              "name": "overall_iaq_status",
+              "value": "Bad",
+              "tagType": "AtomicTag"
+            },
+            {
+              "valueSource": "memory",
+              "dataType": "Boolean",
+              "name": "smoke_alarm",
+              "value": false,
+              "tagType": "AtomicTag"
+            },
+            {
+              "valueSource": "memory",
+              "dataType": "Boolean",
+              "name": "smoke_hushed",
+              "value": false,
+              "tagType": "AtomicTag"
+            },
+            {
+              "valueSource": "memory",
+              "dataType": "Boolean",
+              "name": "too_much_smoke",
+              "value": false,
+              "tagType": "AtomicTag"
+            },
+            {
+              "valueSource": "memory",
+              "dataType": "String",
+              "name": "announcement",
+              "value": "Guest Bedroom",
+              "tagType": "AtomicTag"
+            },
+            {
+              "valueSource": "memory",
+              "dataType": "Boolean",
+              "name": "notify_iaq_temp",
+              "value": true,
+              "tagType": "AtomicTag"
+            },
+            {
+              "valueSource": "memory",
+              "dataType": "Boolean",
+              "name": "motion_active",
+              "value": false,
+              "tagType": "AtomicTag"
+            },
+            {
+              "valueSource": "memory",
+              "dataType": "Float4",
+              "name": "temperature_f",
+              "value": 83.0,
+              "tagType": "AtomicTag"
+            },
+            {
+              "name": "errors",
+              "tagType": "Folder"
+            },
+            {
+              "valueSource": "memory",
+              "dataType": "Float4",
+              "name": "location_id",
+              "value": 341315.0,
+              "tagType": "AtomicTag"
+            },
+            {
+              "valueSource": "memory",
+              "dataType": "String",
+              "name": "hwrev",
+              "value": "WD-ESP32",
+              "tagType": "AtomicTag"
+            },
+            {
+              "valueSource": "memory",
+              "dataType": "String",
+              "name": "country_code",
+              "value": "US",
+              "tagType": "AtomicTag"
+            },
+            {
+              "valueSource": "memory",
+              "dataType": "Boolean",
+              "name": "notify_contact",
+              "value": false,
+              "tagType": "AtomicTag"
+            },
+            {
+              "name": "hpa",
+              "tagType": "Folder",
+              "tags": [
+                {
+                  "valueSource": "memory",
+                  "dataType": "String",
+                  "name": "status",
+                  "value": "Unhealthy",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "valueSource": "memory",
+                  "dataType": "Float4",
+                  "historyProvider": "db_liewfam",
+                  "name": "value",
+                  "historyEnabled": true,
+                  "value": 101359.0,
+                  "tagType": "AtomicTag",
+                  "sampleMode": "TagGroup"
+                },
+                {
+                  "valueSource": "memory",
+                  "dataType": "String",
+                  "name": "Unit",
+                  "value": "hpa",
+                  "tagType": "AtomicTag"
+                }
+              ]
+            },
+            {
+              "valueSource": "memory",
+              "dataType": "String",
+              "name": "model",
+              "value": "wifiiaqdetector",
+              "tagType": "AtomicTag"
+            },
+            {
+              "valueSource": "memory",
+              "dataType": "Float4",
+              "name": "smoke_level",
+              "value": 6.0,
+              "tagType": "AtomicTag"
+            },
+            {
+              "name": "diag_params",
+              "tagType": "Folder",
+              "tags": [
+                {
+                  "valueSource": "memory",
+                  "dataType": "Float4",
+                  "name": "ap_rssi",
+                  "value": -50.0,
+                  "tagType": "AtomicTag"
+                }
+              ]
+            },
+            {
+              "valueSource": "memory",
+              "dataType": "Float4",
+              "name": "ap_rssi",
+              "value": -50.0,
+              "tagType": "AtomicTag"
+            },
+            {
+              "valueSource": "memory",
+              "dataType": "Boolean",
+              "name": "identifying",
+              "value": false,
+              "tagType": "AtomicTag"
+            },
+            {
+              "valueSource": "memory",
+              "dataType": "String",
+              "name": "instance_id",
+              "value": "e453a37717",
+              "tagType": "AtomicTag"
+            },
+            {
+              "name": "iaq",
+              "tagType": "Folder",
+              "tags": [
+                {
+                  "valueSource": "memory",
+                  "dataType": "Float4",
+                  "historyProvider": "db_liewfam",
+                  "name": "value",
+                  "historyEnabled": true,
+                  "value": 66.79,
+                  "tagType": "AtomicTag",
+                  "sampleMode": "TagGroup"
+                },
+                {
+                  "valueSource": "memory",
+                  "dataType": "String",
+                  "name": "status",
+                  "value": "Good",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "valueSource": "memory",
+                  "dataType": "String",
+                  "name": "Unit",
+                  "value": "",
+                  "tagType": "AtomicTag"
+                }
+              ]
+            },
+            {
+              "valueSource": "memory",
+              "dataType": "Boolean",
+              "name": "co_alarm",
+              "value": false,
+              "tagType": "AtomicTag"
+            },
+            {
+              "valueSource": "memory",
+              "dataType": "Boolean",
+              "name": "reset_flag",
+              "value": false,
+              "tagType": "AtomicTag"
+            },
+            {
+              "valueSource": "memory",
+              "dataType": "Boolean",
+              "name": "weather_active",
+              "value": false,
+              "tagType": "AtomicTag"
+            },
+            {
+              "valueSource": "memory",
+              "dataType": "Float4",
+              "name": "id",
+              "value": 515476.0,
+              "tagType": "AtomicTag"
+            },
+            {
+              "name": "capabilities",
+              "tagType": "Folder",
+              "tags": [
+                {
+                  "valueSource": "memory",
+                  "dataType": "String",
+                  "name": "0",
+                  "value": "smoke",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "valueSource": "memory",
+                  "dataType": "String",
+                  "name": "2",
+                  "value": "temperature",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "valueSource": "memory",
+                  "dataType": "String",
+                  "name": "1",
+                  "value": "co",
+                  "tagType": "AtomicTag"
+                }
+              ]
+            },
+            {
+              "valueSource": "memory",
+              "dataType": "Float4",
+              "name": "temperature",
+              "value": 83.0,
+              "tagType": "AtomicTag"
+            },
+            {
+              "valueSource": "memory",
+              "dataType": "Boolean",
+              "name": "ptt_active",
+              "value": false,
+              "tagType": "AtomicTag"
+            },
+            {
+              "valueSource": "memory",
+              "dataType": "Boolean",
+              "name": "notify_eol",
+              "value": true,
+              "tagType": "AtomicTag"
+            },
+            {
+              "valueSource": "memory",
+              "dataType": "String",
+              "name": "battery_state",
+              "value": "ok",
+              "tagType": "AtomicTag"
+            },
+            {
+              "valueSource": "memory",
+              "dataType": "String",
+              "name": "ssid",
+              "value": "LiewFam",
+              "tagType": "AtomicTag"
+            },
+            {
+              "valueSource": "memory",
+              "dataType": "String",
+              "name": "label",
+              "value": "Smoke - GB",
+              "tagType": "AtomicTag"
+            },
+            {
+              "valueSource": "memory",
+              "dataType": "Float4",
+              "name": "mb_model",
+              "value": 38.0,
+              "tagType": "AtomicTag"
+            },
+            {
+              "name": "humidity",
+              "tagType": "Folder",
+              "tags": [
+                {
+                  "valueSource": "memory",
+                  "dataType": "Float4",
+                  "historyProvider": "db_liewfam",
+                  "name": "value",
+                  "historyEnabled": true,
+                  "value": 22.14,
+                  "tagType": "AtomicTag",
+                  "sampleMode": "TagGroup"
+                },
+                {
+                  "valueSource": "memory",
+                  "dataType": "String",
+                  "name": "Unit",
+                  "value": "%RH",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "valueSource": "memory",
+                  "dataType": "String",
+                  "name": "status",
+                  "value": "Bad",
+                  "tagType": "AtomicTag"
+                }
+              ]
+            },
+            {
+              "valueSource": "memory",
+              "dataType": "String",
+              "name": "iaq_last_test_time",
+              "value": "2024-02-07T16:09:32Z",
+              "tagType": "AtomicTag"
+            },
+            {
+              "valueSource": "memory",
+              "dataType": "Float4",
+              "name": "co_level",
+              "value": 0.0,
+              "tagType": "AtomicTag"
+            },
+            {
+              "valueSource": "memory",
+              "dataType": "Boolean",
+              "name": "notify_tvoc",
+              "value": true,
+              "tagType": "AtomicTag"
+            },
+            {
+              "valueSource": "memory",
+              "dataType": "Boolean",
+              "name": "lost",
+              "value": false,
+              "tagType": "AtomicTag"
+            },
+            {
+              "valueSource": "memory",
+              "dataType": "Boolean",
+              "name": "locate_active",
+              "value": false,
+              "tagType": "AtomicTag"
+            },
+            {
+              "valueSource": "memory",
+              "dataType": "Float4",
+              "name": "batt_volt",
+              "value": 0.0,
+              "tagType": "AtomicTag"
+            },
+            {
+              "valueSource": "memory",
+              "dataType": "Float4",
+              "name": "smoke_comp",
+              "value": 0.0,
+              "tagType": "AtomicTag"
+            },
+            {
+              "valueSource": "memory",
+              "dataType": "Float4",
+              "name": "end_of_life_status",
+              "value": 1.0,
+              "tagType": "AtomicTag"
+            },
+            {
+              "valueSource": "memory",
+              "dataType": "String",
+              "name": "serial_number",
+              "value": "0813814BB147",
+              "tagType": "AtomicTag"
+            },
+            {
+              "valueSource": "memory",
+              "dataType": "Float4",
+              "name": "longitude",
+              "value": 0.0,
+              "tagType": "AtomicTag"
+            },
+            {
+              "valueSource": "memory",
+              "dataType": "String",
+              "name": "ptt_state",
+              "value": "idle",
+              "tagType": "AtomicTag"
+            },
+            {
+              "name": "co2",
+              "tagType": "Folder",
+              "tags": [
+                {
+                  "valueSource": "memory",
+                  "dataType": "String",
+                  "name": "Unit",
+                  "value": "PPM",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "valueSource": "memory",
+                  "dataType": "String",
+                  "name": "status",
+                  "value": "Good",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "valueSource": "memory",
+                  "dataType": "Float4",
+                  "name": "value",
+                  "value": 667.87,
+                  "tagType": "AtomicTag"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "sensors",
+      "tagType": "Folder",
+      "tags": [
+        {
+          "name": "kidde",
+          "tagType": "Folder",
+          "tags": [
+            {
+              "name": "sensor_4",
+              "typeId": "kidde_sensor",
+              "tagType": "UdtInstance",
+              "tags": [
+                {
+                  "value": 0.0,
+                  "name": "latitude",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "name": "errors",
+                  "tagType": "Folder"
+                },
+                {
+                  "value": true,
+                  "name": "notify_tvoc",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "value": false,
+                  "name": "lost",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "value": 0.0,
+                  "name": "batt_volt",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "value": "US",
+                  "name": "country_code",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "value": false,
+                  "name": "locate_active",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "name": "hpa",
+                  "tagType": "Folder",
+                  "tags": [
+                    {
+                      "value": 101256.0,
+                      "name": "value",
+                      "tagType": "AtomicTag"
+                    },
+                    {
+                      "value": "Unhealthy",
+                      "name": "status",
+                      "tagType": "AtomicTag"
+                    },
+                    {
+                      "value": "hpa",
+                      "name": "Unit",
+                      "tagType": "AtomicTag"
+                    }
+                  ]
+                },
+                {
+                  "value": false,
+                  "name": "too_much_smoke",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "name": "fwrev",
+                  "tagType": "Folder",
+                  "tags": [
+                    {
+                      "value": "2.5",
+                      "name": "wm",
+                      "tagType": "AtomicTag"
+                    },
+                    {
+                      "value": "1.9",
+                      "name": "alarm",
+                      "tagType": "AtomicTag"
+                    },
+                    {
+                      "value": "4.4.1",
+                      "name": "net",
+                      "tagType": "AtomicTag"
+                    }
+                  ]
+                },
+                {
+                  "value": true,
+                  "name": "notify",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "value": true,
+                  "name": "notify_iaq_temp",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "value": "wifiiaqdetector",
+                  "name": "model",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "name": "co2",
+                  "tagType": "Folder",
+                  "tags": [
+                    {
+                      "value": 1399.02,
+                      "name": "value",
+                      "tagType": "AtomicTag"
+                    },
+                    {
+                      "value": "PPM",
+                      "name": "Unit",
+                      "tagType": "AtomicTag"
+                    },
+                    {
+                      "value": "Moderate",
+                      "name": "status",
+                      "tagType": "AtomicTag"
+                    }
+                  ]
+                },
+                {
+                  "value": 0.0,
+                  "name": "altitude",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "value": true,
+                  "name": "iaq_test_status",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "value": "Normal",
+                  "name": "iaq_state",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "value": true,
+                  "name": "notify_eol",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "value": 0.0,
+                  "name": "iaq_learn_countdown",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "name": "capabilities",
+                  "tagType": "Folder",
+                  "tags": [
+                    {
+                      "value": "temperature",
+                      "name": "2",
+                      "tagType": "AtomicTag"
+                    },
+                    {
+                      "value": "co",
+                      "name": "1",
+                      "tagType": "AtomicTag"
+                    },
+                    {
+                      "value": "smoke",
+                      "name": "0",
+                      "tagType": "AtomicTag"
+                    }
+                  ]
+                },
+                {
+                  "value": false,
+                  "name": "ptt_active",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "value": 515476.0,
+                  "name": "id",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "value": 1.0,
+                  "name": "end_of_life_status",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "value": false,
+                  "name": "co_alarm",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "value": false,
+                  "name": "reset_flag",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "value": false,
+                  "name": "identifying",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "value": "Guest Bedroom",
+                  "name": "announcement",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "value": 341315.0,
+                  "name": "location_id",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "value": false,
+                  "name": "motion_active",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "value": 3.0,
+                  "name": "smoke_level",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "value": "2024-12-16T22:33:16Z",
+                  "name": "iaq_last_test_time",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "value": true,
+                  "name": "notify_mold_risk",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "name": "tvoc",
+                  "tagType": "Folder",
+                  "tags": [
+                    {
+                      "value": "ppb",
+                      "name": "Unit",
+                      "tagType": "AtomicTag"
+                    },
+                    {
+                      "value": 636.78,
+                      "name": "value",
+                      "tagType": "AtomicTag"
+                    },
+                    {
+                      "value": "Moderate",
+                      "name": "status",
+                      "tagType": "AtomicTag"
+                    }
+                  ]
+                },
+                {
+                  "value": 479.0,
+                  "name": "life",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "value": "LiewFam",
+                  "name": "ssid",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "value": "Smoke - GB",
+                  "name": "label",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "value": false,
+                  "name": "smoke_alarm",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "value": false,
+                  "name": "smoke_hushed",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "value": true,
+                  "name": "notify_rh",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "value": "Moderate",
+                  "name": "overall_iaq_status",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "name": "diag_params",
+                  "tagType": "Folder",
+                  "tags": [
+                    {
+                      "value": -52.0,
+                      "name": "ap_rssi",
+                      "tagType": "AtomicTag"
+                    }
+                  ]
+                },
+                {
+                  "value": 0.0,
+                  "name": "smoke_comp",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "value": 82.0,
+                  "name": "temperature",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "value": false,
+                  "name": "weather_active",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "value": 82.0,
+                  "name": "temperature_f",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "value": "WD-ESP32",
+                  "name": "hwrev",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "value": 0.0,
+                  "name": "co_level",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "value": -52.0,
+                  "name": "ap_rssi",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "value": "0813814BB147",
+                  "name": "serial_number",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "value": false,
+                  "name": "notify_contact",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "value": "idle",
+                  "name": "ptt_state",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "value": 0.0,
+                  "name": "longitude",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "name": "iaq",
+                  "tagType": "Folder",
+                  "tags": [
+                    {
+                      "value": "Moderate",
+                      "name": "status",
+                      "tagType": "AtomicTag"
+                    },
+                    {
+                      "value": 139.9,
+                      "name": "value",
+                      "tagType": "AtomicTag"
+                    },
+                    {
+                      "value": "",
+                      "name": "Unit",
+                      "tagType": "AtomicTag"
+                    }
+                  ]
+                },
+                {
+                  "value": "e453a37717",
+                  "name": "instance_id",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "name": "iaq_temperature",
+                  "tagType": "Folder",
+                  "tags": [
+                    {
+                      "value": "Moderate",
+                      "name": "status",
+                      "tagType": "AtomicTag"
+                    },
+                    {
+                      "value": "F",
+                      "name": "Unit",
+                      "tagType": "AtomicTag"
+                    },
+                    {
+                      "value": 78.26,
+                      "name": "value",
+                      "tagType": "AtomicTag"
+                    }
+                  ]
+                },
+                {
+                  "value": "ok",
+                  "name": "battery_state",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "value": "2024-12-17T01:04:09.666996912Z",
+                  "name": "last_seen",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "value": 0.0,
+                  "name": "accuracy",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "value": 38.0,
+                  "name": "mb_model",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "name": "humidity",
+                  "tagType": "Folder",
+                  "tags": [
+                    {
+                      "value": 36.67,
+                      "name": "value",
+                      "tagType": "AtomicTag"
+                    },
+                    {
+                      "value": "%RH",
+                      "name": "Unit",
+                      "tagType": "AtomicTag"
+                    },
+                    {
+                      "value": "Good",
+                      "name": "status",
+                      "tagType": "AtomicTag"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "name": "sensor_0",
+              "typeId": "kidde_sensor",
+              "tagType": "UdtInstance",
+              "tags": [
+                {
+                  "value": false,
+                  "name": "too_much_smoke",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "value": true,
+                  "name": "notify_rh",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "value": "2024-12-16T23:30:43Z",
+                  "name": "iaq_last_test_time",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "value": false,
+                  "name": "smoke_alarm",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "value": 0.0,
+                  "name": "batt_volt",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "value": true,
+                  "name": "notify_tvoc",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "value": false,
+                  "name": "lost",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "value": "Den",
+                  "name": "announcement",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "value": "US",
+                  "name": "country_code",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "value": true,
+                  "name": "notify_eol",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "value": false,
+                  "name": "ptt_active",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "value": "Moderate",
+                  "name": "overall_iaq_status",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "value": 0.0,
+                  "name": "latitude",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "name": "humidity",
+                  "tagType": "Folder",
+                  "tags": [
+                    {
+                      "value": 34.15,
+                      "name": "value",
+                      "tagType": "AtomicTag"
+                    },
+                    {
+                      "value": "Good",
+                      "name": "status",
+                      "tagType": "AtomicTag"
+                    },
+                    {
+                      "value": "%RH",
+                      "name": "Unit",
+                      "tagType": "AtomicTag"
+                    }
+                  ]
+                },
+                {
+                  "value": true,
+                  "name": "notify_mold_risk",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "value": 515440.0,
+                  "name": "id",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "value": "2024-12-17T00:56:13.242416416Z",
+                  "name": "last_seen",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "value": 479.0,
+                  "name": "life",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "name": "fwrev",
+                  "tagType": "Folder",
+                  "tags": [
+                    {
+                      "value": "1.9",
+                      "name": "alarm",
+                      "tagType": "AtomicTag"
+                    },
+                    {
+                      "value": "4.4.1",
+                      "name": "net",
+                      "tagType": "AtomicTag"
+                    },
+                    {
+                      "value": "2.5",
+                      "name": "wm",
+                      "tagType": "AtomicTag"
+                    }
+                  ]
+                },
+                {
+                  "value": true,
+                  "name": "notify",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "name": "diag_params",
+                  "tagType": "Folder",
+                  "tags": [
+                    {
+                      "value": -58.0,
+                      "name": "ap_rssi",
+                      "tagType": "AtomicTag"
+                    }
+                  ]
+                },
+                {
+                  "value": "LiewFam",
+                  "name": "ssid",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "value": 0.0,
+                  "name": "smoke_level",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "value": false,
+                  "name": "reset_flag",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "value": false,
+                  "name": "smoke_hushed",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "name": "tvoc",
+                  "tagType": "Folder",
+                  "tags": [
+                    {
+                      "value": 404.21,
+                      "name": "value",
+                      "tagType": "AtomicTag"
+                    },
+                    {
+                      "value": "ppb",
+                      "name": "Unit",
+                      "tagType": "AtomicTag"
+                    },
+                    {
+                      "value": "Good",
+                      "name": "status",
+                      "tagType": "AtomicTag"
+                    }
+                  ]
+                },
+                {
+                  "value": 0.0,
+                  "name": "altitude",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "value": 1.0,
+                  "name": "end_of_life_status",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "name": "co2",
+                  "tagType": "Folder",
+                  "tags": [
+                    {
+                      "value": 1246.83,
+                      "name": "value",
+                      "tagType": "AtomicTag"
+                    },
+                    {
+                      "value": "Moderate",
+                      "name": "status",
+                      "tagType": "AtomicTag"
+                    },
+                    {
+                      "value": "PPM",
+                      "name": "Unit",
+                      "tagType": "AtomicTag"
+                    }
+                  ]
+                },
+                {
+                  "name": "capabilities",
+                  "tagType": "Folder",
+                  "tags": [
+                    {
+                      "value": "temperature",
+                      "name": "2",
+                      "tagType": "AtomicTag"
+                    },
+                    {
+                      "value": "smoke",
+                      "name": "0",
+                      "tagType": "AtomicTag"
+                    },
+                    {
+                      "value": "co",
+                      "name": "1",
+                      "tagType": "AtomicTag"
+                    }
+                  ]
+                },
+                {
+                  "value": 0.0,
+                  "name": "longitude",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "value": false,
+                  "name": "locate_active",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "value": "081340FA80E0",
+                  "name": "serial_number",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "value": "idle",
+                  "name": "ptt_state",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "value": false,
+                  "name": "notify_contact",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "value": -8.0,
+                  "name": "smoke_comp",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "value": 0.0,
+                  "name": "co_level",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "value": 87.0,
+                  "name": "temperature_f",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "value": 0.0,
+                  "name": "iaq_learn_countdown",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "value": 87.0,
+                  "name": "temperature",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "value": "WD-ESP32",
+                  "name": "hwrev",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "value": "Smoke - DN",
+                  "name": "label",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "value": "Normal",
+                  "name": "iaq_state",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "value": false,
+                  "name": "motion_active",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "name": "iaq_temperature",
+                  "tagType": "Folder",
+                  "tags": [
+                    {
+                      "value": "Moderate",
+                      "name": "status",
+                      "tagType": "AtomicTag"
+                    },
+                    {
+                      "value": "F",
+                      "name": "Unit",
+                      "tagType": "AtomicTag"
+                    },
+                    {
+                      "value": 81.1,
+                      "name": "value",
+                      "tagType": "AtomicTag"
+                    }
+                  ]
+                },
+                {
+                  "value": true,
+                  "name": "iaq_test_status",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "value": 0.0,
+                  "name": "accuracy",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "value": "afdceda7ec",
+                  "name": "instance_id",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "value": -58.0,
+                  "name": "ap_rssi",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "name": "hpa",
+                  "tagType": "Folder",
+                  "tags": [
+                    {
+                      "value": "hpa",
+                      "name": "Unit",
+                      "tagType": "AtomicTag"
+                    },
+                    {
+                      "value": 101190.0,
+                      "name": "value",
+                      "tagType": "AtomicTag"
+                    },
+                    {
+                      "value": "Unhealthy",
+                      "name": "status",
+                      "tagType": "AtomicTag"
+                    }
+                  ]
+                },
+                {
+                  "value": 38.0,
+                  "name": "mb_model",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "value": "ok",
+                  "name": "battery_state",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "value": 341315.0,
+                  "name": "location_id",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "name": "iaq",
+                  "tagType": "Folder",
+                  "tags": [
+                    {
+                      "value": 124.68,
+                      "name": "value",
+                      "tagType": "AtomicTag"
+                    },
+                    {
+                      "value": "",
+                      "name": "Unit",
+                      "tagType": "AtomicTag"
+                    },
+                    {
+                      "value": "Moderate",
+                      "name": "status",
+                      "tagType": "AtomicTag"
+                    }
+                  ]
+                },
+                {
+                  "value": false,
+                  "name": "co_alarm",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "value": false,
+                  "name": "identifying",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "value": false,
+                  "name": "weather_active",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "name": "errors",
+                  "tagType": "Folder"
+                },
+                {
+                  "value": "wifiiaqdetector",
+                  "name": "model",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "value": true,
+                  "name": "notify_iaq_temp",
+                  "tagType": "AtomicTag"
+                }
+              ]
+            },
+            {
+              "name": "api",
+              "tagType": "Folder",
+              "tags": [
+                {
+                  "valueSource": "memory",
+                  "dataType": "Document",
+                  "name": "buffer",
+                  "value": [],
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "valueSource": "expr",
+                  "eventScripts": [
+                    {
+                      "eventid": "valueChanged",
+                      "script": "\t\u0027\u0027\u0027\n\tGet data from Kidde api. Refer to the global script\n\tWhen response ok, turn on connected bit.\n\t\u0027\u0027\u0027\n\trootPath \u003d \u0027[default]sensors/kidde/\u0027\n\tbufferTagPath \u003d \u0027[default]sensors/kidde/api/buffer\u0027\n\ttry:\n\t\tresponse \u003d sensors.kiddeSmoke.getData()\n\t\tif response:\n\t\t\tsystem.tag.writeBlocking([bufferTagPath], [response])\n\t\t\treadBack \u003d system.tag.readBlocking(bufferTagPath)[0].value\n\t\t\tfor idx in range(len(readBack)):\n\t\t\t\ttagPath \u003d rootPath + \u0027sensor_%d\u0027%idx\n\t\t\t\treturnPath \u003d g_script.tags.browseTag(tagPath)\n\t\t\t\tcontent \u003d readBack[idx]\n\t\t\t\treturnData \u003d g_script.tags.formatTags(content)\n\t\t\t\twritePathList,writeValueList\u003dg_script.tags.formatToWritableList(tagPath, returnData, returnPath)\n\t\t\t\tsystem.tag.writeBlocking(writePathList, writeValueList)\n\t\t\t\n\t\t\t# set connected to true to indicated that API successfully called and wrote the tags.\n\t\t\tsystem.tag.writeBlocking([\u0027[default]sensors/kidde/connected\u0027], [1])\n\t\t\n\t\telse:\n\t\t\tsystem.tag.writeBlocking([\u0027[default]sensors/kidde/connected\u0027], [0])\n\texcept:\n\t\t# when failed, turn off connected bit.\n\t\tsystem.tag.writeBlocking([\u0027[default]sensors/kidde/connected\u0027], [0])"
+                    }
+                  ],
+                  "expression": "now(10000)",
+                  "dataType": "DateTime",
+                  "name": "10sUpdate",
+                  "formatString": "yyyy-MM-dd h:mm:ss aa",
+                  "tagType": "AtomicTag",
+                  "enabled": true
+                }
+              ]
+            },
+            {
+              "name": "sensor_3",
+              "typeId": "kidde_sensor",
+              "tagType": "UdtInstance",
+              "tags": [
+                {
+                  "value": -9.0,
+                  "name": "smoke_comp",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "value": 75.0,
+                  "name": "temperature",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "value": 0.0,
+                  "name": "longitude",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "value": false,
+                  "name": "notify_contact",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "value": false,
+                  "name": "weather_active",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "value": false,
+                  "name": "motion_active",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "value": "081370F905B4",
+                  "name": "serial_number",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "value": "ok",
+                  "name": "battery_state",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "name": "diag_params",
+                  "tagType": "Folder",
+                  "tags": [
+                    {
+                      "value": -40.0,
+                      "name": "ap_rssi",
+                      "tagType": "AtomicTag"
+                    }
+                  ]
+                },
+                {
+                  "value": 0.0,
+                  "name": "smoke_level",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "value": "ec90ecdf38",
+                  "name": "instance_id",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "name": "iaq",
+                  "tagType": "Folder",
+                  "tags": [
+                    {
+                      "value": "Moderate",
+                      "name": "status",
+                      "tagType": "AtomicTag"
+                    },
+                    {
+                      "value": "",
+                      "name": "Unit",
+                      "tagType": "AtomicTag"
+                    },
+                    {
+                      "value": 112.41,
+                      "name": "value",
+                      "tagType": "AtomicTag"
+                    }
+                  ]
+                },
+                {
+                  "value": 75.0,
+                  "name": "temperature_f",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "value": "Smoke - LR",
+                  "name": "label",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "value": "LiewFam",
+                  "name": "ssid",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "value": "wifiiaqdetector",
+                  "name": "model",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "value": 0.0,
+                  "name": "altitude",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "value": 341315.0,
+                  "name": "location_id",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "value": false,
+                  "name": "ptt_active",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "value": 515393.0,
+                  "name": "id",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "value": "Normal",
+                  "name": "iaq_state",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "value": 0.0,
+                  "name": "iaq_learn_countdown",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "value": -40.0,
+                  "name": "ap_rssi",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "value": true,
+                  "name": "iaq_test_status",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "name": "hpa",
+                  "tagType": "Folder",
+                  "tags": [
+                    {
+                      "value": "hpa",
+                      "name": "Unit",
+                      "tagType": "AtomicTag"
+                    },
+                    {
+                      "value": 101310.0,
+                      "name": "value",
+                      "tagType": "AtomicTag"
+                    },
+                    {
+                      "value": "Unhealthy",
+                      "name": "status",
+                      "tagType": "AtomicTag"
+                    }
+                  ]
+                },
+                {
+                  "value": true,
+                  "name": "notify_mold_risk",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "value": "WD-ESP32",
+                  "name": "hwrev",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "value": false,
+                  "name": "too_much_smoke",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "value": false,
+                  "name": "co_alarm",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "value": false,
+                  "name": "identifying",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "value": "livingroom",
+                  "name": "announcement",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "value": "US",
+                  "name": "country_code",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "name": "errors",
+                  "tagType": "Folder"
+                },
+                {
+                  "value": 0.0,
+                  "name": "latitude",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "value": 0.0,
+                  "name": "batt_volt",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "value": true,
+                  "name": "notify_rh",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "value": "Moderate",
+                  "name": "overall_iaq_status",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "value": false,
+                  "name": "locate_active",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "value": true,
+                  "name": "notify_iaq_temp",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "value": "2024-12-17T01:04:02.550858313Z",
+                  "name": "last_seen",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "name": "tvoc",
+                  "tagType": "Folder",
+                  "tags": [
+                    {
+                      "value": "ppb",
+                      "name": "Unit",
+                      "tagType": "AtomicTag"
+                    },
+                    {
+                      "value": 527.71,
+                      "name": "value",
+                      "tagType": "AtomicTag"
+                    },
+                    {
+                      "value": "Moderate",
+                      "name": "status",
+                      "tagType": "AtomicTag"
+                    }
+                  ]
+                },
+                {
+                  "value": "2024-12-16T17:57:37Z",
+                  "name": "iaq_last_test_time",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "value": false,
+                  "name": "smoke_hushed",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "value": true,
+                  "name": "notify_tvoc",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "value": false,
+                  "name": "lost",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "value": false,
+                  "name": "smoke_alarm",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "value": true,
+                  "name": "notify_eol",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "value": 479.0,
+                  "name": "life",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "name": "capabilities",
+                  "tagType": "Folder",
+                  "tags": [
+                    {
+                      "value": "smoke",
+                      "name": "0",
+                      "tagType": "AtomicTag"
+                    },
+                    {
+                      "value": "temperature",
+                      "name": "2",
+                      "tagType": "AtomicTag"
+                    },
+                    {
+                      "value": "co",
+                      "name": "1",
+                      "tagType": "AtomicTag"
+                    }
+                  ]
+                },
+                {
+                  "value": false,
+                  "name": "reset_flag",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "name": "humidity",
+                  "tagType": "Folder",
+                  "tags": [
+                    {
+                      "value": "Good",
+                      "name": "status",
+                      "tagType": "AtomicTag"
+                    },
+                    {
+                      "value": 52.86,
+                      "name": "value",
+                      "tagType": "AtomicTag"
+                    },
+                    {
+                      "value": "%RH",
+                      "name": "Unit",
+                      "tagType": "AtomicTag"
+                    }
+                  ]
+                },
+                {
+                  "value": 38.0,
+                  "name": "mb_model",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "value": 1.0,
+                  "name": "end_of_life_status",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "name": "iaq_temperature",
+                  "tagType": "Folder",
+                  "tags": [
+                    {
+                      "value": "F",
+                      "name": "Unit",
+                      "tagType": "AtomicTag"
+                    },
+                    {
+                      "value": "Good",
+                      "name": "status",
+                      "tagType": "AtomicTag"
+                    },
+                    {
+                      "value": 71.96,
+                      "name": "value",
+                      "tagType": "AtomicTag"
+                    }
+                  ]
+                },
+                {
+                  "value": 0.0,
+                  "name": "accuracy",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "value": "idle",
+                  "name": "ptt_state",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "name": "co2",
+                  "tagType": "Folder",
+                  "tags": [
+                    {
+                      "value": 1124.15,
+                      "name": "value",
+                      "tagType": "AtomicTag"
+                    },
+                    {
+                      "value": "PPM",
+                      "name": "Unit",
+                      "tagType": "AtomicTag"
+                    },
+                    {
+                      "value": "Moderate",
+                      "name": "status",
+                      "tagType": "AtomicTag"
+                    }
+                  ]
+                },
+                {
+                  "value": true,
+                  "name": "notify",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "value": 0.0,
+                  "name": "co_level",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "name": "fwrev",
+                  "tagType": "Folder",
+                  "tags": [
+                    {
+                      "value": "2.5",
+                      "name": "wm",
+                      "tagType": "AtomicTag"
+                    },
+                    {
+                      "value": "1.9",
+                      "name": "alarm",
+                      "tagType": "AtomicTag"
+                    },
+                    {
+                      "value": "4.4.1",
+                      "name": "net",
+                      "tagType": "AtomicTag"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "valueSource": "memory",
+              "dataType": "Boolean",
+              "name": "connected",
+              "value": true,
+              "tagType": "AtomicTag"
+            },
+            {
+              "name": "sensor_2",
+              "typeId": "kidde_sensor",
+              "tagType": "UdtInstance",
+              "tags": [
+                {
+                  "value": false,
+                  "name": "reset_flag",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "value": "idle",
+                  "name": "ptt_state",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "value": -31.0,
+                  "name": "ap_rssi",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "value": false,
+                  "name": "ptt_active",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "name": "capabilities",
+                  "tagType": "Folder",
+                  "tags": [
+                    {
+                      "value": "smoke",
+                      "name": "0",
+                      "tagType": "AtomicTag"
+                    },
+                    {
+                      "value": "co",
+                      "name": "1",
+                      "tagType": "AtomicTag"
+                    },
+                    {
+                      "value": "temperature",
+                      "name": "2",
+                      "tagType": "AtomicTag"
+                    }
+                  ]
+                },
+                {
+                  "value": 515416.0,
+                  "name": "id",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "value": false,
+                  "name": "locate_active",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "value": "Upstairs",
+                  "name": "announcement",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "name": "co2",
+                  "tagType": "Folder",
+                  "tags": [
+                    {
+                      "value": 2380.57,
+                      "name": "value",
+                      "tagType": "AtomicTag"
+                    },
+                    {
+                      "value": "Hazardous",
+                      "name": "status",
+                      "tagType": "AtomicTag"
+                    },
+                    {
+                      "value": "PPM",
+                      "name": "Unit",
+                      "tagType": "AtomicTag"
+                    }
+                  ]
+                },
+                {
+                  "value": false,
+                  "name": "identifying",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "value": false,
+                  "name": "co_alarm",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "value": "US",
+                  "name": "country_code",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "value": false,
+                  "name": "too_much_smoke",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "value": "08136136745D",
+                  "name": "serial_number",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "value": 0.0,
+                  "name": "longitude",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "value": "WD-ESP32",
+                  "name": "hwrev",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "value": 0.0,
+                  "name": "latitude",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "value": true,
+                  "name": "notify_mold_risk",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "value": 0.0,
+                  "name": "smoke_level",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "value": false,
+                  "name": "motion_active",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "name": "diag_params",
+                  "tagType": "Folder",
+                  "tags": [
+                    {
+                      "value": -31.0,
+                      "name": "ap_rssi",
+                      "tagType": "AtomicTag"
+                    }
+                  ]
+                },
+                {
+                  "value": true,
+                  "name": "notify_rh",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "value": "LiewFam",
+                  "name": "ssid",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "value": "Smoke - UP",
+                  "name": "label",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "value": false,
+                  "name": "smoke_alarm",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "value": false,
+                  "name": "lost",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "value": "Moderate",
+                  "name": "overall_iaq_status",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "value": true,
+                  "name": "notify_tvoc",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "value": true,
+                  "name": "notify_eol",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "value": false,
+                  "name": "smoke_hushed",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "value": 479.0,
+                  "name": "life",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "name": "tvoc",
+                  "tagType": "Folder",
+                  "tags": [
+                    {
+                      "value": "Moderate",
+                      "name": "status",
+                      "tagType": "AtomicTag"
+                    },
+                    {
+                      "value": "ppb",
+                      "name": "Unit",
+                      "tagType": "AtomicTag"
+                    },
+                    {
+                      "value": 858.28,
+                      "name": "value",
+                      "tagType": "AtomicTag"
+                    }
+                  ]
+                },
+                {
+                  "value": 81.0,
+                  "name": "temperature",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "value": "2024-12-17T00:01:45Z",
+                  "name": "iaq_last_test_time",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "value": 0.0,
+                  "name": "altitude",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "value": true,
+                  "name": "iaq_test_status",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "value": "Normal",
+                  "name": "iaq_state",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "value": "wifiiaqdetector",
+                  "name": "model",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "value": 341315.0,
+                  "name": "location_id",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "value": 0.0,
+                  "name": "accuracy",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "name": "iaq_temperature",
+                  "tagType": "Folder",
+                  "tags": [
+                    {
+                      "value": "Moderate",
+                      "name": "status",
+                      "tagType": "AtomicTag"
+                    },
+                    {
+                      "value": "F",
+                      "name": "Unit",
+                      "tagType": "AtomicTag"
+                    },
+                    {
+                      "value": 78.15,
+                      "name": "value",
+                      "tagType": "AtomicTag"
+                    }
+                  ]
+                },
+                {
+                  "value": 0.0,
+                  "name": "iaq_learn_countdown",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "value": 1.0,
+                  "name": "end_of_life_status",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "value": 0.0,
+                  "name": "co_level",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "name": "hpa",
+                  "tagType": "Folder",
+                  "tags": [
+                    {
+                      "value": "hpa",
+                      "name": "Unit",
+                      "tagType": "AtomicTag"
+                    },
+                    {
+                      "value": "Unhealthy",
+                      "name": "status",
+                      "tagType": "AtomicTag"
+                    },
+                    {
+                      "value": 101269.0,
+                      "name": "value",
+                      "tagType": "AtomicTag"
+                    }
+                  ]
+                },
+                {
+                  "value": true,
+                  "name": "notify",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "value": false,
+                  "name": "notify_contact",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "name": "fwrev",
+                  "tagType": "Folder",
+                  "tags": [
+                    {
+                      "value": "1.9",
+                      "name": "alarm",
+                      "tagType": "AtomicTag"
+                    },
+                    {
+                      "value": "2.5",
+                      "name": "wm",
+                      "tagType": "AtomicTag"
+                    },
+                    {
+                      "value": "4.4.1",
+                      "name": "net",
+                      "tagType": "AtomicTag"
+                    }
+                  ]
+                },
+                {
+                  "value": 3.0,
+                  "name": "smoke_comp",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "value": false,
+                  "name": "weather_active",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "value": 0.0,
+                  "name": "batt_volt",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "value": true,
+                  "name": "notify_iaq_temp",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "value": "2024-12-17T01:04:55.609529521Z",
+                  "name": "last_seen",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "name": "errors",
+                  "tagType": "Folder"
+                },
+                {
+                  "name": "iaq",
+                  "tagType": "Folder",
+                  "tags": [
+                    {
+                      "value": "Bad",
+                      "name": "status",
+                      "tagType": "AtomicTag"
+                    },
+                    {
+                      "value": 238.06,
+                      "name": "value",
+                      "tagType": "AtomicTag"
+                    },
+                    {
+                      "value": "",
+                      "name": "Unit",
+                      "tagType": "AtomicTag"
+                    }
+                  ]
+                },
+                {
+                  "value": 81.0,
+                  "name": "temperature_f",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "name": "humidity",
+                  "tagType": "Folder",
+                  "tags": [
+                    {
+                      "value": "Good",
+                      "name": "status",
+                      "tagType": "AtomicTag"
+                    },
+                    {
+                      "value": 37.96,
+                      "name": "value",
+                      "tagType": "AtomicTag"
+                    },
+                    {
+                      "value": "%RH",
+                      "name": "Unit",
+                      "tagType": "AtomicTag"
+                    }
+                  ]
+                },
+                {
+                  "value": 38.0,
+                  "name": "mb_model",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "value": "ok",
+                  "name": "battery_state",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "value": "17a58cade9",
+                  "name": "instance_id",
+                  "tagType": "AtomicTag"
+                }
+              ]
+            },
+            {
+              "name": "sensor_1",
+              "typeId": "kidde_sensor",
+              "tagType": "UdtInstance",
+              "tags": [
+                {
+                  "name": "errors",
+                  "tagType": "Folder"
+                },
+                {
+                  "value": "US",
+                  "name": "country_code",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "value": 0.0,
+                  "name": "batt_volt",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "value": false,
+                  "name": "smoke_alarm",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "value": false,
+                  "name": "too_much_smoke",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "value": true,
+                  "name": "notify_tvoc",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "value": false,
+                  "name": "lost",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "value": true,
+                  "name": "notify_mold_risk",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "name": "tvoc",
+                  "tagType": "Folder",
+                  "tags": [
+                    {
+                      "value": "ppb",
+                      "name": "Unit",
+                      "tagType": "AtomicTag"
+                    },
+                    {
+                      "value": "Good",
+                      "name": "status",
+                      "tagType": "AtomicTag"
+                    },
+                    {
+                      "value": 421.88,
+                      "name": "value",
+                      "tagType": "AtomicTag"
+                    }
+                  ]
+                },
+                {
+                  "value": false,
+                  "name": "smoke_hushed",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "value": "2024-12-16T23:25:47Z",
+                  "name": "iaq_last_test_time",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "name": "humidity",
+                  "tagType": "Folder",
+                  "tags": [
+                    {
+                      "value": "Good",
+                      "name": "status",
+                      "tagType": "AtomicTag"
+                    },
+                    {
+                      "value": "%RH",
+                      "name": "Unit",
+                      "tagType": "AtomicTag"
+                    },
+                    {
+                      "value": 39.72,
+                      "name": "value",
+                      "tagType": "AtomicTag"
+                    }
+                  ]
+                },
+                {
+                  "value": 0.0,
+                  "name": "accuracy",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "value": "Good",
+                  "name": "overall_iaq_status",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "value": 0.0,
+                  "name": "latitude",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "value": "2024-12-17T01:02:33.727011292Z",
+                  "name": "last_seen",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "value": true,
+                  "name": "notify_rh",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "value": "wifiiaqdetector",
+                  "name": "model",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "value": 38.0,
+                  "name": "mb_model",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "value": false,
+                  "name": "ptt_active",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "value": 515451.0,
+                  "name": "id",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "value": "4c8e7aea7b",
+                  "name": "instance_id",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "value": false,
+                  "name": "identifying",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "name": "iaq",
+                  "tagType": "Folder",
+                  "tags": [
+                    {
+                      "value": "Moderate",
+                      "name": "status",
+                      "tagType": "AtomicTag"
+                    },
+                    {
+                      "value": 143.97,
+                      "name": "value",
+                      "tagType": "AtomicTag"
+                    },
+                    {
+                      "value": "",
+                      "name": "Unit",
+                      "tagType": "AtomicTag"
+                    }
+                  ]
+                },
+                {
+                  "value": false,
+                  "name": "co_alarm",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "value": 341315.0,
+                  "name": "location_id",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "value": "Master Bedroom",
+                  "name": "announcement",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "name": "hpa",
+                  "tagType": "Folder",
+                  "tags": [
+                    {
+                      "value": 101230.0,
+                      "name": "value",
+                      "tagType": "AtomicTag"
+                    },
+                    {
+                      "value": "hpa",
+                      "name": "Unit",
+                      "tagType": "AtomicTag"
+                    },
+                    {
+                      "value": "Unhealthy",
+                      "name": "status",
+                      "tagType": "AtomicTag"
+                    }
+                  ]
+                },
+                {
+                  "value": false,
+                  "name": "weather_active",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "value": -22.0,
+                  "name": "ap_rssi",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "value": true,
+                  "name": "notify_iaq_temp",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "value": false,
+                  "name": "notify_contact",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "value": "081351362F6E",
+                  "name": "serial_number",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "value": -3.0,
+                  "name": "smoke_comp",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "value": 82.0,
+                  "name": "temperature",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "value": 0.0,
+                  "name": "co_level",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "value": "WD-ESP32",
+                  "name": "hwrev",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "value": 82.0,
+                  "name": "temperature_f",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "value": "Smoke - MB",
+                  "name": "label",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "value": "ok",
+                  "name": "battery_state",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "value": 0.0,
+                  "name": "iaq_learn_countdown",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "value": 0.0,
+                  "name": "smoke_level",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "value": false,
+                  "name": "motion_active",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "name": "iaq_temperature",
+                  "tagType": "Folder",
+                  "tags": [
+                    {
+                      "value": "Good",
+                      "name": "status",
+                      "tagType": "AtomicTag"
+                    },
+                    {
+                      "value": 76.28,
+                      "name": "value",
+                      "tagType": "AtomicTag"
+                    },
+                    {
+                      "value": "F",
+                      "name": "Unit",
+                      "tagType": "AtomicTag"
+                    }
+                  ]
+                },
+                {
+                  "name": "diag_params",
+                  "tagType": "Folder",
+                  "tags": [
+                    {
+                      "value": -22.0,
+                      "name": "ap_rssi",
+                      "tagType": "AtomicTag"
+                    }
+                  ]
+                },
+                {
+                  "value": true,
+                  "name": "iaq_test_status",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "value": 0.0,
+                  "name": "altitude",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "value": "LiewFam",
+                  "name": "ssid",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "value": false,
+                  "name": "reset_flag",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "name": "capabilities",
+                  "tagType": "Folder",
+                  "tags": [
+                    {
+                      "value": "temperature",
+                      "name": "2",
+                      "tagType": "AtomicTag"
+                    },
+                    {
+                      "value": "co",
+                      "name": "1",
+                      "tagType": "AtomicTag"
+                    },
+                    {
+                      "value": "smoke",
+                      "name": "0",
+                      "tagType": "AtomicTag"
+                    }
+                  ]
+                },
+                {
+                  "value": "Normal",
+                  "name": "iaq_state",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "value": true,
+                  "name": "notify_eol",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "value": true,
+                  "name": "notify",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "value": 479.0,
+                  "name": "life",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "name": "fwrev",
+                  "tagType": "Folder",
+                  "tags": [
+                    {
+                      "value": "4.4.1",
+                      "name": "net",
+                      "tagType": "AtomicTag"
+                    },
+                    {
+                      "value": "2.5",
+                      "name": "wm",
+                      "tagType": "AtomicTag"
+                    },
+                    {
+                      "value": "1.9",
+                      "name": "alarm",
+                      "tagType": "AtomicTag"
+                    }
+                  ]
+                },
+                {
+                  "name": "co2",
+                  "tagType": "Folder",
+                  "tags": [
+                    {
+                      "value": 1439.79,
+                      "name": "value",
+                      "tagType": "AtomicTag"
+                    },
+                    {
+                      "value": "Moderate",
+                      "name": "status",
+                      "tagType": "AtomicTag"
+                    },
+                    {
+                      "value": "PPM",
+                      "name": "Unit",
+                      "tagType": "AtomicTag"
+                    }
+                  ]
+                },
+                {
+                  "value": false,
+                  "name": "locate_active",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "value": 1.0,
+                  "name": "end_of_life_status",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "value": 0.0,
+                  "name": "longitude",
+                  "tagType": "AtomicTag"
+                },
+                {
+                  "value": "idle",
+                  "name": "ptt_state",
+                  "tagType": "AtomicTag"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
