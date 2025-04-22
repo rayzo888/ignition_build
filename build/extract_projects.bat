@@ -2,8 +2,8 @@
 setlocal enabledelayedexpansion
 
 :: Set Variables
-set MOVE_PROJECTS_URL=http://onebiopdv05x373:8088/system/webdev/MAST_Connect/utility/projectControl/moveFiles
-set TARGET_PROJECTS_FOLDER="C:\\Users\\sadm-X276512\\Documents\\MAST\\SourceCode\\sandbox\\projects"
+set MOVE_PROJECTS_URL=http://centralhub.local:8088/system/webdev/HomeAutomation/utility/projectControl/moveFiles
+set TARGET_PROJECTS_FOLDER="C:\\Users\\rayzo\\Documents\\Source%%20Code\\001_Ignition%%20Build\\ignition_build\\projects"
 set /p USER_INPUT=Enter project name: 
 
 :: HTTPPost
