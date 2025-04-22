@@ -1,26 +1,34 @@
 @echo off
-setlocal enabledelayedexpansion
+setlocal EnableDelayedExpansion
 
-:: Set Variables
-set EXPORT_TAGS_URL=http://centralhub.local:8088/system/webdev/HomeAutomation/utility/tagControl/exportTags
-set SRC_TAGFOLDER=C:\Users\rayzo\Documents\Source Code\001_Ignition Build\ignition_build\tags
+REM Prompt for tag provider
+set /p TAG_PROVIDER=Enter Tag Provider (e.g., default): 
 
-:: Prompt user for input (string value)
-set /p USER_INPUT=Enter tag provider name: 
-set FULL_URL="%EXPORT_TAGS_URL%?tagFileFolder=%SRC_TAGFOLDER%&tagProvider=%USER_INPUT%"
+REM Define and encode tag path
+set ENCODED_TAG_FOLDER=C:\\Users\\rayzo\\Documents\\Source%%20Code\\001_Ignition%%20Build\\ignition_build\\tags
 
-:: HTTPGet
-echo Extracting tags from ignition server.
-curl -X GET -s -o nul -w "%%{http_code}" %FULL_URL% > tmp_httpResponse.txt
-set /p STATUS_CODE=<tmp_httpResponse.txt
-del tmp_httpResponse.txt
+REM Construct the URL safely
+set "URL=http://centralhub.local:8088/system/webdev/HomeAutomation/utility/tagControl/exportTags?tagFileFolder=%ENCODED_TAG_FOLDER%&tagProvider=%TAG_PROVIDER%"
+
+REM Output file and temp file
+set "TMP_STATUS_FILE=tmp_statuscode.txt"
+
+REM Perform curl request with safe variable expansion
+echo Sending request to: !URL!
+curl -s  -w "%%{http_code}" "!URL!" > "!TMP_STATUS_FILE!"
+
+REM Read status code
+set /p STATUS_CODE=<"!TMP_STATUS_FILE!"
+del "!TMP_STATUS_FILE!"
+
+echo HTTP Status Code: !STATUS_CODE!
 
 :: Check for success
 if not "%STATUS_CODE%"=="200" (
-    echo ERROR: Request failed. Status code: %STATUS_CODE%
+    echo ❌ Request failed with status code !STATUS_CODE!.
 ) else (
-    echo Success: Status code 200
+    echo ✅ Request successful. Output saved to !ENCODED_TAG_FOLDER!.
 )
 
-timeout /t 5 >nul
-exit /b 0
+endlocal
+pause
