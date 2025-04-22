@@ -1,0 +1,23 @@
+{
+  "type": "AnyOf",
+  "securityLevels": [
+    {
+      "name": "Authenticated",
+      "children": [
+        {
+          "name": "Roles",
+          "children": [
+            {
+              "name": "Guest",
+              "children": []
+            },
+            {
+              "name": "Owner",
+              "children": []
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

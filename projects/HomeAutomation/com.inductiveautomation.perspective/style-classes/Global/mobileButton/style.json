@@ -1,0 +1,17 @@
+{
+  "base": {
+    "style": {
+      "fontFamily": "Noto Sans",
+      "fontSize": "12px",
+      "fontWeight": "normal"
+    }
+  },
+  "variants": [
+    {
+      "pseudo": "hover",
+      "style": {
+        "backgroundColor": "#CCCCFF"
+      }
+    }
+  ]
+}

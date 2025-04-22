@@ -1,0 +1,185 @@
+{
+  "custom": {},
+  "params": {},
+  "props": {
+    "defaultSize": {
+      "height": 872,
+      "width": 432
+    }
+  },
+  "root": {
+    "children": [
+      {
+        "meta": {
+          "name": "Carousel"
+        },
+        "position": {
+          "basis": "200px",
+          "grow": 1
+        },
+        "propConfig": {
+          "props.views[0].viewParams.connected": {
+            "binding": {
+              "config": {
+                "fallbackDelay": 2.5,
+                "mode": "direct",
+                "tagPath": "[default]sensors/kidde/connected"
+              },
+              "type": "tag"
+            }
+          },
+          "props.views[0].viewParams.sensor": {
+            "binding": {
+              "config": {
+                "expression": "{[default]sensors/kidde/api/buffer}[{this.props.views[0].viewParams.sensorNum}]"
+              },
+              "type": "expr"
+            }
+          },
+          "props.views[1].viewParams.connected": {
+            "binding": {
+              "config": {
+                "fallbackDelay": 2.5,
+                "mode": "direct",
+                "tagPath": "[default]sensors/kidde/connected"
+              },
+              "type": "tag"
+            }
+          },
+          "props.views[1].viewParams.sensor": {
+            "binding": {
+              "config": {
+                "expression": "{[default]sensors/kidde/api/buffer}[{this.props.views[1].viewParams.sensorNum}]"
+              },
+              "type": "expr"
+            }
+          },
+          "props.views[2].viewParams.connected": {
+            "binding": {
+              "config": {
+                "fallbackDelay": 2.5,
+                "mode": "direct",
+                "tagPath": "[default]sensors/kidde/connected"
+              },
+              "type": "tag"
+            }
+          },
+          "props.views[2].viewParams.sensor": {
+            "binding": {
+              "config": {
+                "expression": "{[default]sensors/kidde/api/buffer}[{this.props.views[2].viewParams.sensorNum}]"
+              },
+              "type": "expr"
+            }
+          },
+          "props.views[3].viewParams.connected": {
+            "binding": {
+              "config": {
+                "fallbackDelay": 2.5,
+                "mode": "direct",
+                "tagPath": "[default]sensors/kidde/connected"
+              },
+              "type": "tag"
+            }
+          },
+          "props.views[3].viewParams.sensor": {
+            "binding": {
+              "config": {
+                "expression": "{[default]sensors/kidde/api/buffer}[{this.props.views[3].viewParams.sensorNum}]"
+              },
+              "type": "expr"
+            }
+          },
+          "props.views[4].viewParams.connected": {
+            "binding": {
+              "config": {
+                "fallbackDelay": 2.5,
+                "mode": "direct",
+                "tagPath": "[default]sensors/kidde/connected"
+              },
+              "type": "tag"
+            }
+          },
+          "props.views[4].viewParams.sensor": {
+            "binding": {
+              "config": {
+                "expression": "{[default]sensors/kidde/api/buffer}[{this.props.views[4].viewParams.sensorNum}]"
+              },
+              "type": "expr"
+            }
+          }
+        },
+        "props": {
+          "activePane": 2,
+          "appearance": {
+            "arrows": {
+              "enabled": false
+            },
+            "slidePadding": 0,
+            "useDefaultViewHeight": true,
+            "useDefaultViewWidth": true
+          },
+          "behavior": {
+            "transitionSpeed": 200
+          },
+          "lazyLoad": false,
+          "views": [
+            {
+              "alignItems": "flex-start",
+              "direction": "row",
+              "justify": "flex-start",
+              "viewParams": {
+                "sensorNum": 0
+              },
+              "viewPath": "Template/Kidde Smoke Alarm Small"
+            },
+            {
+              "alignItems": "flex-start",
+              "direction": "row",
+              "justify": "flex-start",
+              "viewParams": {
+                "sensorNum": 1
+              },
+              "viewPath": "Template/Kidde Smoke Alarm Small"
+            },
+            {
+              "alignItems": "flex-start",
+              "direction": "row",
+              "justify": "flex-start",
+              "viewParams": {
+                "sensorNum": 2
+              },
+              "viewPath": "Template/Kidde Smoke Alarm Small"
+            },
+            {
+              "alignItems": "flex-start",
+              "direction": "row",
+              "justify": "flex-start",
+              "viewParams": {
+                "sensorNum": 3
+              },
+              "viewPath": "Template/Kidde Smoke Alarm Small"
+            },
+            {
+              "alignItems": "flex-start",
+              "direction": "row",
+              "justify": "flex-start",
+              "viewParams": {
+                "sensorNum": 4
+              },
+              "viewPath": "Template/Kidde Smoke Alarm Small"
+            }
+          ]
+        },
+        "type": "ia.display.carousel"
+      }
+    ],
+    "meta": {
+      "name": "root"
+    },
+    "props": {
+      "direction": "column"
+    },
+    "type": "ia.container.flex"
+  }
+}

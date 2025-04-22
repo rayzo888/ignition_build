@@ -1,0 +1,16 @@
+{
+  "scope": "G",
+  "version": 1,
+  "restricted": false,
+  "overridable": true,
+  "files": [
+    "data.bin"
+  ],
+  "attributes": {
+    "lastModification": {
+      "actor": "LiewFam",
+      "timestamp": "2024-09-04T23:04:43Z"
+    },
+    "lastModificationSignature": "81b85b493e07644ea8300476c5abdfcbb580483640f95f26d499734009744266"
+  }
+}

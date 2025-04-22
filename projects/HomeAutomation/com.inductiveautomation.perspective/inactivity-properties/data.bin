@@ -1,0 +1,9 @@
+{
+  "isIdleTimeoutEnabled": true,
+  "idleMinutes": 15,
+  "gracePeriod": 10,
+  "gracePeriodMessage": "Your session will be closed due to inactivity in {seconds} seconds",
+  "timeoutAction": "CloseSession",
+  "logoutUrl": "",
+  "isCustomLogout": false
+}

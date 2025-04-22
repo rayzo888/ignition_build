@@ -1,0 +1,61 @@
+{
+  "pages": {
+    "/": {
+      "title": "",
+      "viewPath": "Page/Home"
+    },
+    "/alarms": {
+      "viewPath": "Page/Alarms"
+    },
+    "/charts": {
+      "viewPath": "Page/Charts"
+    },
+    "/kidde/smokealarm": {
+      "title": "",
+      "viewPath": "Page/Kidde/SmokeAlarm"
+    },
+    "/opensky/current": {
+      "title": "",
+      "viewPath": "Page/Opensky/Current"
+    },
+    "/opensky/historical": {
+      "title": "",
+      "viewPath": "Page/Opensky/Historical"
+    }
+  },
+  "sharedDocks": {
+    "cornerPriority": "top-bottom",
+    "left": [
+      {
+        "anchor": "fixed",
+        "autoBreakpoint": 768,
+        "content": "cover",
+        "handle": "hide",
+        "iconUrl": "",
+        "id": "menu",
+        "modal": false,
+        "resizable": false,
+        "show": "onDemand",
+        "size": 210,
+        "viewParams": {},
+        "viewPath": "Docks/Menu Vertical"
+      }
+    ],
+    "top": [
+      {
+        "anchor": "fixed",
+        "autoBreakpoint": 480,
+        "content": "push",
+        "handle": "hide",
+        "iconUrl": "",
+        "id": "",
+        "modal": false,
+        "resizable": false,
+        "show": "visible",
+        "size": 60,
+        "viewParams": {},
+        "viewPath": "Header/Header"
+      }
+    ]
+  }
+}

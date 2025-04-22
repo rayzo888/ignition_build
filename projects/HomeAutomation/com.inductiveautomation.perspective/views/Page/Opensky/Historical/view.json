@@ -1,0 +1,311 @@
+{
+  "custom": {},
+  "params": {},
+  "permissions": {
+    "securityLevels": [
+      {
+        "children": [
+          {
+            "children": [
+              {
+                "children": [],
+                "name": "Guest"
+              },
+              {
+                "children": [],
+                "name": "Owner"
+              }
+            ],
+            "name": "Roles"
+          }
+        ],
+        "name": "Authenticated"
+      }
+    ],
+    "type": "AnyOf"
+  },
+  "props": {},
+  "root": {
+    "children": [
+      {
+        "custom": {
+          "gMarkerStyle": {
+            "enabled": true,
+            "event": {
+              "stopPropagation": false
+            },
+            "icon": {
+              "color": "#4190F7",
+              "path": "material/airplanemode_active",
+              "rotate": 203.2,
+              "size": {
+                "height": 16,
+                "width": 16
+              },
+              "style": {
+                "classes": ""
+              }
+            },
+            "lat": 35.1561,
+            "lng": -78.2965,
+            "name": "",
+            "opacity": 1,
+            "popup": {
+              "autoClose": true,
+              "closeButton": true,
+              "closeOnClick": null,
+              "closeOnEscapeKey": true,
+              "content": {
+                "text": "",
+                "view": {
+                  "params": {},
+                  "path": ""
+                }
+              },
+              "enabled": false,
+              "height": {
+                "max": null
+              },
+              "pan": {
+                "auto": true
+              },
+              "width": {
+                "max": 300,
+                "min": 50
+              }
+            },
+            "properties": {},
+            "tooltip": {
+              "content": {
+                "text": "N4953L  , lat: 35.1561, lng: -78.2965",
+                "view": {
+                  "params": {},
+                  "path": ""
+                }
+              },
+              "direction": "auto",
+              "opacity": 1,
+              "permanent": false,
+              "sticky": false
+            }
+          },
+          "home": {
+            "enabled": true,
+            "event": {
+              "stopPropagation": false
+            },
+            "icon": {
+              "color": "#000080",
+              "path": "material/home",
+              "rotate": 0,
+              "size": {
+                "height": 16,
+                "width": 16
+              },
+              "style": {
+                "classes": ""
+              }
+            },
+            "lat": 35.8138,
+            "lng": -78.8073,
+            "name": "",
+            "opacity": 1,
+            "popup": {
+              "autoClose": true,
+              "closeButton": true,
+              "closeOnClick": null,
+              "closeOnEscapeKey": true,
+              "content": {
+                "text": "",
+                "view": {
+                  "params": {},
+                  "path": ""
+                }
+              },
+              "enabled": false,
+              "height": {
+                "max": null
+              },
+              "pan": {
+                "auto": true
+              },
+              "width": {
+                "max": 300,
+                "min": 50
+              }
+            },
+            "properties": {},
+            "tooltip": {
+              "content": {
+                "text": "LiewFam",
+                "view": {
+                  "params": {},
+                  "path": ""
+                }
+              },
+              "direction": "auto",
+              "opacity": 1,
+              "permanent": false,
+              "sticky": false
+            }
+          }
+        },
+        "meta": {
+          "name": "Map"
+        },
+        "position": {
+          "basis": "400px",
+          "grow": 1
+        },
+        "propConfig": {
+          "props.layers.ui.marker": {
+            "binding": {
+              "config": {
+                "avoidScanClassValidation": true,
+                "dateRange": {
+                  "endDate": "now(0)",
+                  "startDate": "dateArithmetic(now(0), -24, \u0027hour\u0027)"
+                },
+                "enableValueCache": true,
+                "ignoreBadQuality": false,
+                "preventInterpolation": false,
+                "returnFormat": "Wide",
+                "returnSize": {
+                  "type": "RAW"
+                },
+                "tags": [
+                  {
+                    "path": "[db_liewfam/ignition-centralhub:default]opensky/flightqueue/singleflightdata"
+                  }
+                ],
+                "valueFormat": "DOCUMENT"
+              },
+              "transforms": [
+                {
+                  "code": "\tflightData \u003d value \n\tmarker \u003d []\n\tfor item in flightData:\n\t\tjsonDict \u003d system.util.jsonDecode(item[\"singleflightdata\"])\n\t\tmarkerStyle \u003d self.custom.gMarkerStyle\n\t\tcallsign \u003d jsonDict[\u0027CallSign\u0027]\n\t\tlatitude \u003d jsonDict[\u0027latitude\u0027]\n\t\tlongitude \u003d jsonDict[\u0027longitude\u0027]\n\t\ttrue_track \u003d jsonDict[\u0027true_track\u0027]\n\t\tmarkerStyle[\u0027icon\u0027][\u0027rotate\u0027] \u003d true_track\n\t\tmarkerStyle[\u0027tooltip\u0027][\u0027content\u0027][\u0027text\u0027] \u003d \u0027%s, lat: %s, lng: %s\u0027%(callsign, latitude, longitude)\n\t\tmarkerStyle[\u0027lat\u0027] \u003d latitude\n\t\tmarkerStyle[\u0027lng\u0027] \u003d longitude\n\t\tmarker.append(markerStyle)\n\tmarker.append(self.custom.home)\n\treturn marker",
+                  "type": "script"
+                }
+              ],
+              "type": "tag-history"
+            },
+            "persistent": false
+          }
+        },
+        "props": {
+          "init": {
+            "center": {
+              "lat": 35.884081,
+              "lng": -78.785559
+            },
+            "zoom": 11
+          },
+          "layers": {
+            "raster": {
+              "tile": [
+                {
+                  "WMS": {
+                    "format": "image/jpeg",
+                    "layers": "",
+                    "styles": "",
+                    "transparent": false,
+                    "uppercase": false,
+                    "version": "1.1.1"
+                  },
+                  "options": {
+                    "attribution": "Map data \u0026copy; \u003ca href\u003d\u0027https://www.openstreetmap.org/\u0027\u003eOpenStreetMap\u003c/a\u003e contributors, \u003ca href\u003d\u0027https://creativecommons.org/licenses/by-sa/2.0/\u0027\u003eCC-BY-SA\u003c/a\u003e",
+                    "crossOrigin": false,
+                    "detectRetina": false,
+                    "errorTileUrl": "",
+                    "opacity": 0.4,
+                    "subdomains": [
+                      "a",
+                      "b",
+                      "c"
+                    ],
+                    "tileSize": {
+                      "height": 256,
+                      "width": 256
+                    },
+                    "tms": false,
+                    "update": {
+                      "interval": 200,
+                      "whenIdle": false,
+                      "whenZooming": true
+                    },
+                    "zIndex": 1,
+                    "zoom": {
+                      "max": 18,
+                      "min": 0,
+                      "native": {
+                        "max": null,
+                        "min": null
+                      },
+                      "offset": 0,
+                      "reverse": false
+                    }
+                  },
+                  "url": "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+                  "urlTemplateParams": {}
+                }
+              ]
+            },
+            "ui": {},
+            "vector": {
+              "rectangle": [
+                {
+                  "event": {
+                    "stopPropagation": false
+                  },
+                  "fill": {
+                    "color": "#000080",
+                    "enabled": true,
+                    "opacity": 0.1,
+                    "rule": "nonzero"
+                  },
+                  "noClip": false,
+                  "rectangles": [
+                    {
+                      "corner1": {
+                        "lat": 35,
+                        "lng": -79
+                      },
+                      "corner2": {
+                        "lat": 36,
+                        "lng": -78
+                      },
+                      "name": "",
+                      "properties": {}
+                    }
+                  ],
+                  "smoothFactor": 1,
+                  "stroke": {
+                    "color": "",
+                    "dashArray": "",
+                    "dashOffset": "",
+                    "enabled": true,
+                    "lineCap": "round",
+                    "lineJoin": "round",
+                    "opacity": 1,
+                    "weight": 3
+                  }
+                }
+              ]
+            }
+          },
+          "location": {
+            "enabled": true
+          },
+          "trackResize": true
+        },
+        "type": "ia.display.map"
+      }
+    ],
+    "meta": {
+      "name": "root"
+    },
+    "props": {
+      "direction": "column"
+    },
+    "type": "ia.container.flex"
+  }
+}

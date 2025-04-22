@@ -1,0 +1,16 @@
+{
+  "scope": "G",
+  "version": 1,
+  "restricted": false,
+  "overridable": true,
+  "files": [
+    "config.json"
+  ],
+  "attributes": {
+    "lastModification": {
+      "actor": "LiewFam",
+      "timestamp": "2024-10-31T01:52:32Z"
+    },
+    "lastModificationSignature": "e03096ad22c6c89f36f43daf0805f9b8cba35e90f5932dcf97303aa6724502a0"
+  }
+}

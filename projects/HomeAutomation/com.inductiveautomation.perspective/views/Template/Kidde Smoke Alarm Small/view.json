@@ -1,0 +1,776 @@
+{
+  "custom": {},
+  "params": {
+    "connected": true,
+    "sensor": {
+      "accuracy": 0,
+      "altitude": 0,
+      "announcement": "Guest Bedroom",
+      "ap_rssi": -39,
+      "batt_volt": 0,
+      "battery_state": "ok",
+      "capabilities": [
+        "smoke",
+        "co",
+        "temperature"
+      ],
+      "co2": {
+        "Unit": "PPM",
+        "status": "Moderate",
+        "value": 1301.1
+      },
+      "co_alarm": false,
+      "co_level": 0,
+      "country_code": "US",
+      "diag_params": {
+        "ap_rssi": -39
+      },
+      "end_of_life_status": 1,
+      "errors": [],
+      "fwrev": {
+        "alarm": "1.9",
+        "net": "4.4.1",
+        "wm": "2.5"
+      },
+      "hpa": {
+        "Unit": "hpa",
+        "status": "Unhealthy",
+        "value": 100114
+      },
+      "humidity": {
+        "Unit": "%RH",
+        "status": "Good",
+        "value": 38.26
+      },
+      "hwrev": "WD-ESP32",
+      "iaq": {
+        "Unit": "",
+        "status": "Moderate",
+        "value": 130.11
+      },
+      "iaq_last_test_time": "2024-02-10T15:56:00Z",
+      "iaq_learn_countdown": 0,
+      "iaq_state": "Normal",
+      "iaq_temperature": {
+        "Unit": "F",
+        "status": "Good",
+        "value": 74.28
+      },
+      "iaq_test_status": true,
+      "id": 515476,
+      "identifying": false,
+      "instance_id": "e453a37717",
+      "label": "Smoke - GB",
+      "last_seen": "2024-02-11T01:23:45.370786102Z",
+      "latitude": 0,
+      "life": 523,
+      "locate_active": false,
+      "location_id": 341315,
+      "longitude": 0,
+      "lost": false,
+      "mb_model": 38,
+      "model": "wifiiaqdetector",
+      "motion_active": false,
+      "notify": true,
+      "notify_contact": false,
+      "notify_eol": true,
+      "notify_iaq_temp": true,
+      "notify_mold_risk": true,
+      "notify_rh": true,
+      "notify_tvoc": true,
+      "overall_iaq_status": "Moderate",
+      "ptt_active": false,
+      "ptt_state": "idle",
+      "reset_flag": false,
+      "serial_number": "0813814BB147",
+      "smoke_alarm": false,
+      "smoke_comp": 0,
+      "smoke_hushed": false,
+      "smoke_level": 3,
+      "ssid": "LiewFam",
+      "temperature": 76,
+      "temperature_f": 76,
+      "too_much_smoke": false,
+      "tvoc": {
+        "Unit": "ppb",
+        "status": "Moderate",
+        "value": 830.31
+      },
+      "weather_active": false
+    },
+    "sensorNum": 0
+  },
+  "propConfig": {
+    "params.connected": {
+      "paramDirection": "input",
+      "persistent": true
+    },
+    "params.sensor": {
+      "paramDirection": "input",
+      "persistent": true
+    },
+    "params.sensorNum": {
+      "paramDirection": "input",
+      "persistent": true
+    }
+  },
+  "props": {
+    "defaultSize": {
+      "height": 852,
+      "width": 430
+    },
+    "inputBehavior": "merge",
+    "loading": {
+      "mode": "blocking"
+    }
+  },
+  "root": {
+    "children": [
+      {
+        "children": [
+          {
+            "meta": {
+              "name": "Label"
+            },
+            "position": {
+              "basis": "250px",
+              "grow": 1
+            },
+            "propConfig": {
+              "props.text": {
+                "binding": {
+                  "config": {
+                    "path": "view.params.sensor.label"
+                  },
+                  "type": "property"
+                }
+              }
+            },
+            "props": {
+              "textStyle": {
+                "textAlign": "center"
+              }
+            },
+            "type": "ia.display.label"
+          },
+          {
+            "meta": {
+              "name": "Icon"
+            },
+            "position": {
+              "basis": "50px",
+              "shrink": 0
+            },
+            "propConfig": {
+              "props.color": {
+                "binding": {
+                  "config": {
+                    "path": "view.params.connected"
+                  },
+                  "transforms": [
+                    {
+                      "code": "\tif value \u003d\u003d True:\n\t\treturn \u0027#00D900\u0027\n\telif value \u003d\u003d False:\n\t\treturn \u0027#808080\u0027\n#\telse:\n#\t\treturn \u0027material/wifi\u0027\n\t",
+                      "type": "script"
+                    }
+                  ],
+                  "type": "property"
+                }
+              },
+              "props.path": {
+                "binding": {
+                  "config": {
+                    "path": "view.params.connected"
+                  },
+                  "transforms": [
+                    {
+                      "code": "\tif value \u003d\u003d True:\n\t\treturn \u0027material/wifi\u0027\n\telif value \u003d\u003d False:\n\t\treturn \u0027material/wifi_off\u0027\n#\telse:\n#\t\treturn \u0027material/wifi\u0027\n\t",
+                      "type": "script"
+                    }
+                  ],
+                  "type": "property"
+                }
+              }
+            },
+            "props": {
+              "style": {
+                "paddingBottom": 7.5,
+                "paddingLeft": 7.5,
+                "paddingRight": 7.5,
+                "paddingTop": 7.5
+              }
+            },
+            "type": "ia.display.icon"
+          }
+        ],
+        "meta": {
+          "name": "flexC_device"
+        },
+        "position": {
+          "basis": "50px",
+          "shrink": 0
+        },
+        "props": {
+          "alignContent": "center",
+          "alignItems": "center",
+          "justify": "center",
+          "style": {
+            "overflow": "hidden"
+          }
+        },
+        "type": "ia.container.flex"
+      },
+      {
+        "children": [
+          {
+            "children": [
+              {
+                "meta": {
+                  "name": "iaq_temperature"
+                },
+                "position": {
+                  "basis": "320px"
+                },
+                "propConfig": {
+                  "props.params.sensorNum": {
+                    "binding": {
+                      "config": {
+                        "path": "view.params.sensorNum"
+                      },
+                      "type": "property"
+                    }
+                  }
+                },
+                "props": {
+                  "params": {
+                    "color": "#9FAFFF",
+                    "content": "iaq_temperature",
+                    "max": 100,
+                    "min": 0
+                  },
+                  "path": "Template/_gauge_"
+                },
+                "type": "ia.display.view"
+              },
+              {
+                "meta": {
+                  "name": "humidity"
+                },
+                "position": {
+                  "basis": "320px"
+                },
+                "propConfig": {
+                  "props.params.sensorNum": {
+                    "binding": {
+                      "config": {
+                        "path": "view.params.sensorNum"
+                      },
+                      "type": "property"
+                    }
+                  }
+                },
+                "props": {
+                  "params": {
+                    "color": "#9FAFFF",
+                    "content": "humidity",
+                    "max": 100,
+                    "min": 0
+                  },
+                  "path": "Template/_gauge_"
+                },
+                "type": "ia.display.view"
+              }
+            ],
+            "meta": {
+              "name": "flexC_content_0"
+            },
+            "position": {
+              "height": 0.5,
+              "width": 1
+            },
+            "props": {
+              "alignContent": "flex-start",
+              "alignItems": "flex-start",
+              "style": {
+                "overflow": "hidden"
+              }
+            },
+            "type": "ia.container.flex"
+          },
+          {
+            "children": [
+              {
+                "meta": {
+                  "name": "tvoc"
+                },
+                "position": {
+                  "align": "center",
+                  "basis": "320px",
+                  "grow": 1
+                },
+                "propConfig": {
+                  "props.params.sensorNum": {
+                    "binding": {
+                      "config": {
+                        "path": "view.params.sensorNum"
+                      },
+                      "type": "property"
+                    }
+                  }
+                },
+                "props": {
+                  "params": {
+                    "color": "#9FAFFF",
+                    "content": "tvoc",
+                    "max": 9999,
+                    "min": 0
+                  },
+                  "path": "Template/_gauge_"
+                },
+                "type": "ia.display.view"
+              }
+            ],
+            "meta": {
+              "name": "flexC_content_1"
+            },
+            "position": {
+              "height": 0.5,
+              "width": 1,
+              "y": 0.5
+            },
+            "props": {
+              "justify": "center",
+              "style": {
+                "overflow": "hidden"
+              }
+            },
+            "type": "ia.container.flex"
+          }
+        ],
+        "meta": {
+          "name": "coorC_contents"
+        },
+        "position": {
+          "basis": "350px",
+          "grow": 1
+        },
+        "props": {
+          "mode": "percent"
+        },
+        "type": "ia.container.coord"
+      },
+      {
+        "meta": {
+          "name": "TimeSeriesChart"
+        },
+        "position": {
+          "basis": "275px",
+          "shrink": 0
+        },
+        "propConfig": {
+          "props.series[0].data": {
+            "binding": {
+              "config": {
+                "struct": {
+                  "colNames": "{this.props.series[0].name}",
+                  "histPath": "\u0027[default]sensors/kidde/sensor_\u0027 + {view.params.sensorNum} + \u0027/humidity/value\u0027"
+                },
+                "waitOnAll": true
+              },
+              "transforms": [
+                {
+                  "code": "\thistPath \u003d value[\u0027histPath\u0027]\n\tcolNames \u003d value[\u0027colNames\u0027]\n\tstartDate \u003d system.date.addHours(system.date.now() , -8)\n\tendDate \u003d system.date.now()\n\n\tdataset \u003d system.tag.queryTagHistory(paths\u003d[histPath],columnNames \u003d [colNames], startDate\u003dstartDate, endDate\u003dendDate, intervalMinutes\u003d3)\n\t\n\tdataArr \u003d [{colNames: dataset.getValueAt(idx,colNames), \u0027time\u0027: system.date.toMillis(dataset.getValueAt(idx,\u0027t_stamp\u0027))} for idx in range(dataset.getRowCount())]\n\treturn dataArr",
+                  "type": "script"
+                }
+              ],
+              "type": "expr-struct"
+            }
+          },
+          "props.series[1].data": {
+            "binding": {
+              "config": {
+                "struct": {
+                  "colNames": "{this.props.series[1].name}",
+                  "histPath": "\u0027[default]sensors/kidde/sensor_\u0027 + {view.params.sensorNum} + \u0027/tvoc/value\u0027"
+                },
+                "waitOnAll": true
+              },
+              "transforms": [
+                {
+                  "code": "\thistPath \u003d value[\u0027histPath\u0027]\n\tcolNames \u003d value[\u0027colNames\u0027]\n\tstartDate \u003d system.date.addHours(system.date.now() , -8)\n\tendDate \u003d system.date.now()\n\n\tdataset \u003d system.tag.queryTagHistory(paths\u003d[histPath],columnNames \u003d [colNames], startDate\u003dstartDate, endDate\u003dendDate, intervalMinutes\u003d3)\n\t\n\tdataArr \u003d [{colNames: dataset.getValueAt(idx,colNames), \u0027time\u0027: system.date.toMillis(dataset.getValueAt(idx,\u0027t_stamp\u0027))} for idx in range(dataset.getRowCount())]\n\treturn dataArr",
+                  "type": "script"
+                }
+              ],
+              "type": "expr-struct"
+            }
+          },
+          "props.series[2].data": {
+            "binding": {
+              "config": {
+                "struct": {
+                  "colNames": "{this.props.series[2].name}",
+                  "histPath": "\u0027[default]sensors/kidde/sensor_\u0027 + {view.params.sensorNum} + \u0027/iaq_temperature/value\u0027"
+                },
+                "waitOnAll": true
+              },
+              "transforms": [
+                {
+                  "code": "\thistPath \u003d value[\u0027histPath\u0027]\n\tcolNames \u003d value[\u0027colNames\u0027]\n\tstartDate \u003d system.date.addHours(system.date.now() , -8)\n\tendDate \u003d system.date.now()\n\n\tdataset \u003d system.tag.queryTagHistory(paths\u003d[histPath],columnNames \u003d [colNames], startDate\u003dstartDate, endDate\u003dendDate, intervalMinutes\u003d3)\n\t\n\tdataArr \u003d [{colNames: dataset.getValueAt(idx,colNames), \u0027time\u0027: system.date.toMillis(dataset.getValueAt(idx,\u0027t_stamp\u0027))} for idx in range(dataset.getRowCount())]\n\treturn dataArr",
+                  "type": "script"
+                }
+              ],
+              "type": "expr-struct"
+            }
+          }
+        },
+        "props": {
+          "autoGenerateSeriesNames": true,
+          "legend": {
+            "position": "top",
+            "visible": true
+          },
+          "plots": [
+            {
+              "axes": [
+                {
+                  "alignment": "right",
+                  "grid": {
+                    "color": "",
+                    "dashArray": 0,
+                    "opacity": 0.9,
+                    "style": {
+                      "classes": ""
+                    },
+                    "visible": false
+                  },
+                  "label": {
+                    "font": {
+                      "color": "",
+                      "size": 10
+                    },
+                    "offset": 0,
+                    "style": {
+                      "classes": ""
+                    },
+                    "text": "humidity / temperature",
+                    "visible": true
+                  },
+                  "max": 100,
+                  "min": 0,
+                  "name": "humidity_temp",
+                  "style": {
+                    "classes": ""
+                  },
+                  "tick": {
+                    "color": "",
+                    "count": 5,
+                    "label": {
+                      "font": {
+                        "color": "",
+                        "size": 10
+                      },
+                      "format": "Auto",
+                      "style": {
+                        "classes": ""
+                      }
+                    },
+                    "style": {
+                      "classes": ""
+                    }
+                  },
+                  "width": 60
+                },
+                {
+                  "alignment": "left",
+                  "grid": {
+                    "color": "",
+                    "dashArray": 0,
+                    "opacity": 0.9,
+                    "style": {
+                      "classes": ""
+                    },
+                    "visible": false
+                  },
+                  "label": {
+                    "font": {
+                      "color": "",
+                      "size": 10
+                    },
+                    "offset": 0,
+                    "style": {
+                      "classes": ""
+                    },
+                    "text": "tvoc",
+                    "visible": true
+                  },
+                  "max": "",
+                  "min": "",
+                  "name": "tvoc",
+                  "style": {
+                    "classes": ""
+                  },
+                  "tick": {
+                    "color": "",
+                    "count": "Auto",
+                    "label": {
+                      "font": {
+                        "color": "",
+                        "size": 10
+                      },
+                      "format": "Auto",
+                      "style": {
+                        "classes": ""
+                      }
+                    },
+                    "style": {
+                      "classes": ""
+                    }
+                  },
+                  "width": 60
+                }
+              ],
+              "markers": [],
+              "relativeWeight": 1,
+              "trends": [
+                {
+                  "axis": "humidity_temp",
+                  "baselines": [],
+                  "breakLine": true,
+                  "columns": [
+                    {
+                      "color": "#0000FF",
+                      "key": "Humidity",
+                      "styles": {
+                        "highlighted": {
+                          "fill": {
+                            "color": "",
+                            "opacity": null
+                          },
+                          "stroke": {
+                            "color": "",
+                            "dashArray": null,
+                            "opacity": null,
+                            "width": null
+                          }
+                        },
+                        "muted": {
+                          "fill": {
+                            "color": "",
+                            "opacity": null
+                          },
+                          "stroke": {
+                            "color": "",
+                            "dashArray": null,
+                            "opacity": null,
+                            "width": null
+                          }
+                        },
+                        "normal": {
+                          "fill": {
+                            "color": "",
+                            "opacity": null
+                          },
+                          "stroke": {
+                            "color": "#0000FF",
+                            "dashArray": null,
+                            "opacity": null,
+                            "width": null
+                          }
+                        },
+                        "selected": {
+                          "fill": {
+                            "color": "",
+                            "opacity": null
+                          },
+                          "stroke": {
+                            "color": "",
+                            "dashArray": null,
+                            "opacity": null,
+                            "width": null
+                          }
+                        }
+                      }
+                    }
+                  ],
+                  "interpolation": "curveLinear",
+                  "radius": 2,
+                  "series": "Humidity",
+                  "stack": true,
+                  "type": "line",
+                  "visible": true
+                },
+                {
+                  "axis": "tvoc",
+                  "baselines": [],
+                  "breakLine": true,
+                  "columns": [
+                    {
+                      "color": "#00FF00",
+                      "key": "TVOC",
+                      "styles": {
+                        "highlighted": {
+                          "fill": {
+                            "color": "",
+                            "opacity": null
+                          },
+                          "stroke": {
+                            "color": "",
+                            "dashArray": null,
+                            "opacity": null,
+                            "width": null
+                          }
+                        },
+                        "muted": {
+                          "fill": {
+                            "color": "",
+                            "opacity": null
+                          },
+                          "stroke": {
+                            "color": "",
+                            "dashArray": null,
+                            "opacity": null,
+                            "width": null
+                          }
+                        },
+                        "normal": {
+                          "fill": {
+                            "color": "",
+                            "opacity": null
+                          },
+                          "stroke": {
+                            "color": "",
+                            "dashArray": null,
+                            "opacity": null,
+                            "width": null
+                          }
+                        },
+                        "selected": {
+                          "fill": {
+                            "color": "",
+                            "opacity": null
+                          },
+                          "stroke": {
+                            "color": "",
+                            "dashArray": null,
+                            "opacity": null,
+                            "width": null
+                          }
+                        }
+                      }
+                    }
+                  ],
+                  "interpolation": "curveLinear",
+                  "radius": 2,
+                  "series": "TVOC",
+                  "stack": true,
+                  "type": "line",
+                  "visible": true
+                },
+                {
+                  "axis": "humidity_temp",
+                  "baselines": [],
+                  "breakLine": true,
+                  "columns": [
+                    {
+                      "color": "#FF0000",
+                      "key": "Temperature",
+                      "styles": {
+                        "highlighted": {
+                          "fill": {
+                            "color": "",
+                            "opacity": null
+                          },
+                          "stroke": {
+                            "color": "",
+                            "dashArray": null,
+                            "opacity": null,
+                            "width": null
+                          }
+                        },
+                        "muted": {
+                          "fill": {
+                            "color": "",
+                            "opacity": null
+                          },
+                          "stroke": {
+                            "color": "",
+                            "dashArray": null,
+                            "opacity": null,
+                            "width": null
+                          }
+                        },
+                        "normal": {
+                          "fill": {
+                            "color": "",
+                            "opacity": null
+                          },
+                          "stroke": {
+                            "color": "",
+                            "dashArray": null,
+                            "opacity": null,
+                            "width": null
+                          }
+                        },
+                        "selected": {
+                          "fill": {
+                            "color": "",
+                            "opacity": null
+                          },
+                          "stroke": {
+                            "color": "",
+                            "dashArray": null,
+                            "opacity": null,
+                            "width": null
+                          }
+                        }
+                      }
+                    }
+                  ],
+                  "interpolation": "curveBasisOpen",
+                  "radius": 2,
+                  "series": "Temperature",
+                  "stack": true,
+                  "type": "line",
+                  "visible": true
+                }
+              ]
+            }
+          ],
+          "series": [
+            {
+              "name": "Humidity"
+            },
+            {
+              "name": "TVOC"
+            },
+            {
+              "name": "Temperature"
+            }
+          ],
+          "timeAxis": {
+            "tick": {
+              "label": {
+                "format": "kk:mm"
+              }
+            }
+          },
+          "timeRange": {
+            "timeFormat": "HH:mm:ss"
+          },
+          "xTrace": {
+            "infoBox": {
+              "timeFormat": "HH:mm:ss"
+            }
+          }
+        },
+        "type": "ia.chart.timeseries"
+      }
+    ],
+    "meta": {
+      "name": "root"
+    },
+    "props": {
+      "direction": "column"
+    },
+    "type": "ia.container.flex"
+  }
+}

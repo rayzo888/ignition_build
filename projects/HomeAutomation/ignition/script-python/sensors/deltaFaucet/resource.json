@@ -1,0 +1,17 @@
+{
+  "scope": "A",
+  "version": 1,
+  "restricted": false,
+  "overridable": true,
+  "files": [
+    "code.py"
+  ],
+  "attributes": {
+    "lastModification": {
+      "actor": "LiewFam",
+      "timestamp": "2024-02-12T03:56:45Z"
+    },
+    "hintScope": 2,
+    "lastModificationSignature": "d3031f6277aadbbb7c982a36c50503a61d7bff98025e158526d0cefb06545543"
+  }
+}

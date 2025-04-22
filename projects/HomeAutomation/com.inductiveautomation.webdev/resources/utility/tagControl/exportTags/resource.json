@@ -1,0 +1,24 @@
+{
+  "scope": "G",
+  "version": 1,
+  "restricted": false,
+  "overridable": true,
+  "files": [
+    "config.json",
+    "doTrace.py",
+    "doPut.py",
+    "doHead.py",
+    "doPatch.py",
+    "doPost.py",
+    "doOptions.py",
+    "doGet.py",
+    "doDelete.py"
+  ],
+  "attributes": {
+    "lastModification": {
+      "actor": "MastService",
+      "timestamp": "2025-04-21T15:28:43Z"
+    },
+    "lastModificationSignature": "96bc2cc6b548f70f404b2522d5f4a3f0f4f92c327c08cec9d3ef89b82b3b2d9a"
+  }
+}

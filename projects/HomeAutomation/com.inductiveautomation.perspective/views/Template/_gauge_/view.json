@@ -1,0 +1,284 @@
+{
+  "custom": {},
+  "params": {
+    "content": "iaq_temperature",
+    "max": 100,
+    "min": 0,
+    "sensorNum": 0
+  },
+  "propConfig": {
+    "params.content": {
+      "paramDirection": "input",
+      "persistent": true
+    },
+    "params.max": {
+      "paramDirection": "input",
+      "persistent": true
+    },
+    "params.min": {
+      "paramDirection": "input",
+      "persistent": true
+    },
+    "params.sensorNum": {
+      "paramDirection": "input",
+      "persistent": true
+    }
+  },
+  "props": {
+    "defaultSize": {
+      "height": 250,
+      "width": 250
+    }
+  },
+  "root": {
+    "children": [
+      {
+        "meta": {
+          "name": "Label_0"
+        },
+        "position": {
+          "basis": "32px",
+          "grow": 1,
+          "shrink": 0
+        },
+        "propConfig": {
+          "props.style.backgroundColor": {
+            "binding": {
+              "config": {
+                "fallbackDelay": 2.5,
+                "mode": "indirect",
+                "references": {
+                  "content": "{view.params.content}",
+                  "sensorNum": "{view.params.sensorNum}"
+                },
+                "tagPath": "[default]sensors/kidde/sensor_{sensorNum}/{content}/status"
+              },
+              "transforms": [
+                {
+                  "fallback": "#D5D5D5",
+                  "inputType": "scalar",
+                  "mappings": [
+                    {
+                      "input": "Good",
+                      "output": "#00FF00"
+                    },
+                    {
+                      "input": "Moderate",
+                      "output": "#FF8C00"
+                    },
+                    {
+                      "input": "Bad",
+                      "output": "#FF0000"
+                    }
+                  ],
+                  "outputType": "color",
+                  "type": "map"
+                }
+              ],
+              "type": "tag"
+            }
+          },
+          "props.text": {
+            "binding": {
+              "config": {
+                "fallbackDelay": 2.5,
+                "mode": "indirect",
+                "references": {
+                  "content": "{view.params.content}",
+                  "sensorNum": "{view.params.sensorNum}"
+                },
+                "tagPath": "[default]sensors/kidde/sensor_{sensorNum}/{content}/status"
+              },
+              "type": "tag"
+            }
+          }
+        },
+        "props": {
+          "textStyle": {
+            "textAlign": "center"
+          }
+        },
+        "type": "ia.display.label"
+      },
+      {
+        "meta": {
+          "name": "SimpleGauge"
+        },
+        "position": {
+          "basis": "150px",
+          "shrink": 0
+        },
+        "propConfig": {
+          "props.arc.color": {
+            "binding": {
+              "config": {
+                "fallbackDelay": 2.5,
+                "mode": "indirect",
+                "references": {
+                  "content": "{view.params.content}",
+                  "sensorNum": "{view.params.sensorNum}"
+                },
+                "tagPath": "[default]sensors/kidde/sensor_{sensorNum}/{content}/status"
+              },
+              "transforms": [
+                {
+                  "fallback": "#D5D5D5",
+                  "inputType": "scalar",
+                  "mappings": [
+                    {
+                      "input": "Good",
+                      "output": "#00FF00"
+                    },
+                    {
+                      "input": "Moderate",
+                      "output": "#FF8C00"
+                    },
+                    {
+                      "input": "Bad",
+                      "output": "#FF0000"
+                    }
+                  ],
+                  "outputType": "color",
+                  "type": "map"
+                }
+              ],
+              "type": "tag"
+            }
+          },
+          "props.label.units": {
+            "binding": {
+              "config": {
+                "fallbackDelay": 2.5,
+                "mode": "indirect",
+                "references": {
+                  "content": "{view.params.content}",
+                  "sensorNum": "{view.params.sensorNum}"
+                },
+                "tagPath": "[default]sensors/kidde/sensor_{sensorNum}/{content}/Unit"
+              },
+              "type": "tag"
+            }
+          },
+          "props.maxValue": {
+            "binding": {
+              "config": {
+                "path": "view.params.max"
+              },
+              "type": "property"
+            }
+          },
+          "props.minValue": {
+            "binding": {
+              "config": {
+                "path": "view.params.min"
+              },
+              "type": "property"
+            }
+          },
+          "props.value": {
+            "binding": {
+              "config": {
+                "fallbackDelay": 2.5,
+                "mode": "indirect",
+                "references": {
+                  "content": "{view.params.content}",
+                  "sensorNum": "{view.params.sensorNum}"
+                },
+                "tagPath": "[default]sensors/kidde/sensor_{sensorNum}/{content}/value"
+              },
+              "type": "tag"
+            }
+          }
+        },
+        "props": {
+          "animate": true,
+          "arc": {
+            "width": 10
+          },
+          "arcBackground": {
+            "color": "#555555"
+          },
+          "endAngle": 405,
+          "label": {
+            "color": "#0000D9",
+            "offsetY": 10,
+            "size": 15
+          },
+          "startAngle": 135,
+          "style": {
+            "classes": [],
+            "transform": "scale(1.15)"
+          }
+        },
+        "type": "ia.chart.simple-gauge"
+      },
+      {
+        "meta": {
+          "name": "Sparkline_0"
+        },
+        "position": {
+          "basis": "50px",
+          "grow": 1
+        },
+        "propConfig": {
+          "props.points": {
+            "binding": {
+              "config": {
+                "struct": {
+                  "content": "{view.params.content}",
+                  "sensorNum": "{view.params.sensorNum}"
+                },
+                "waitOnAll": true
+              },
+              "transforms": [
+                {
+                  "code": "\tsensorNum \u003d value[\u0027sensorNum\u0027]\n\tcontent \u003d value[\u0027content\u0027]\n\t\n\trootPath \u003d \u0027[default]sensors/kidde/\u0027\n\tstartDate \u003d system.date.addHours(system.date.now() , -8)\n\tendDate \u003d system.date.now()\n\tpath \u003d [rootPath + \u0027sensor_%s/\u0027%sensorNum + content + \u0027/value\u0027]\n\tdataset \u003d system.tag.queryTagHistory(paths\u003dpath,columnNames \u003d [content], startDate\u003dstartDate, endDate\u003dendDate, intervalMinutes\u003d3)\n\t\n\tdataArr \u003d [dataset.getValueAt(idx,content) for idx in range(dataset.getRowCount())]\n\treturn dataArr",
+                  "type": "script"
+                }
+              ],
+              "type": "expr-struct"
+            }
+          }
+        },
+        "type": "ia.display.sparkline"
+      },
+      {
+        "meta": {
+          "name": "Label"
+        },
+        "position": {
+          "basis": "32px",
+          "grow": 1
+        },
+        "propConfig": {
+          "props.text": {
+            "binding": {
+              "config": {
+                "path": "view.params.content"
+              },
+              "type": "property"
+            }
+          }
+        },
+        "props": {
+          "textStyle": {
+            "textAlign": "center"
+          }
+        },
+        "type": "ia.display.label"
+      }
+    ],
+    "meta": {
+      "name": "root"
+    },
+    "props": {
+      "alignContent": "center",
+      "direction": "column",
+      "justify": "center",
+      "style": {
+        "overflow": "hidden"
+      }
+    },
+    "type": "ia.container.flex"
+  }
+}

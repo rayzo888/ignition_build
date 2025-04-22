@@ -1,0 +1,1104 @@
+{
+  "custom": {},
+  "params": {},
+  "props": {},
+  "root": {
+    "children": [
+      {
+        "children": [
+          {
+            "events": {
+              "dom": {
+                "onClick": {
+                  "config": {
+                    "script": "\t# Create the JythonHttpClient.\n\tclient \u003d system.net.httpClient()\n\tdelta_device_id\u003dself.parent.custom.deviceId\n\tauth_token\u003dself.parent.custom.authToken\n\turl\u003dself.parent.custom.url+\"api/device/toggleWater?deviceId\u003d%s\u0026toggle\u003don\"%delta_device_id\n\t\n\theaders \u003d {\n\t\t\"Authorization\": \"Bearer %s\"  %auth_token,\n\t}\n\tresponse\u003dclient.post(url,headers\u003dheaders)"
+                  },
+                  "scope": "G",
+                  "type": "script"
+                }
+              }
+            },
+            "meta": {
+              "name": "btn_toggleOn"
+            },
+            "position": {
+              "height": 33.97,
+              "width": 80,
+              "x": 19.04,
+              "y": 64.061
+            },
+            "props": {
+              "text": "ON"
+            },
+            "type": "ia.input.button"
+          },
+          {
+            "events": {
+              "dom": {
+                "onClick": {
+                  "config": {
+                    "script": "\t# Create the JythonHttpClient.\n\t\tclient \u003d system.net.httpClient()\n\t\tdelta_device_id\u003dself.parent.custom.deviceId\n\t\tauth_token\u003dself.parent.custom.authToken\n\t\turl\u003dself.parent.custom.url+\"api/device/toggleWater?deviceId\u003d%s\u0026toggle\u003doff\"%delta_device_id\n\t\t\n\t\theaders \u003d {\n\t\t\t\"Authorization\": \"Bearer %s\"  %auth_token,\n\t\t}\n\t\tresponse\u003dclient.post(url,headers\u003dheaders)"
+                  },
+                  "scope": "G",
+                  "type": "script"
+                }
+              }
+            },
+            "meta": {
+              "name": "btn_toggleOff"
+            },
+            "position": {
+              "height": 33.97,
+              "width": 80,
+              "x": 118.04,
+              "y": 64.043
+            },
+            "props": {
+              "text": "OFF"
+            },
+            "type": "ia.input.button"
+          },
+          {
+            "events": {
+              "dom": {
+                "onClick": {
+                  "config": {
+                    "script": "\t# Create the JythonHttpClient.\n\tclient \u003d system.net.httpClient()\n\tdelta_device_id\u003dself.parent.custom.deviceId\n\tauth_token\u003dself.parent.custom.authToken\n\turl\u003dself.parent.custom.url+\"api/device/warmWater?deviceId\u003d%s\"%delta_device_id\n\t\t\n\theaders \u003d {\n\t\t\"Authorization\": \"Bearer %s\"  %auth_token,\n\t}\n\tresponse\u003dclient.get(url,headers\u003dheaders)"
+                  },
+                  "scope": "G",
+                  "type": "script"
+                }
+              }
+            },
+            "meta": {
+              "name": "btn_warmWater"
+            },
+            "position": {
+              "height": 33.97,
+              "width": 180,
+              "x": 19.08,
+              "y": 107.03
+            },
+            "props": {
+              "text": "Warm Water"
+            },
+            "type": "ia.input.button"
+          },
+          {
+            "meta": {
+              "name": "Label"
+            },
+            "position": {
+              "height": 32,
+              "width": 169,
+              "x": 19.07500228881836,
+              "y": 22
+            },
+            "props": {
+              "text": "Kitchen Faucet",
+              "textStyle": {
+                "textAlign": "center"
+              }
+            },
+            "type": "ia.display.label"
+          },
+          {
+            "custom": {
+              "key": [
+                "time",
+                "Fri",
+                "Sat",
+                "Sun",
+                "Mon",
+                "Tue",
+                "Wed",
+                "Thu"
+              ],
+              "key_1": [
+                [
+                  {
+                    "$": [
+                      "ts",
+                      192,
+                      1691721520124
+                    ],
+                    "$ts": 1691721520122
+                  },
+                  2.29,
+                  0,
+                  9.36,
+                  0.15,
+                  0.81,
+                  4.11,
+                  0
+                ]
+              ]
+            },
+            "events": {
+              "dom": {
+                "onClick": {
+                  "config": {
+                    "script": "\theaders, values \u003d sensors.deltaFaucet.getData()\n#\tself.custom.key\u003dheaders\n#\tself.custom.key_1\u003dvalues\n\tself.getSibling(\"Table\").props.data\u003dsystem.dataset.toDataSet(headers, values)"
+                  },
+                  "scope": "G",
+                  "type": "script"
+                }
+              }
+            },
+            "meta": {
+              "name": "btn_getUsage"
+            },
+            "position": {
+              "height": 34,
+              "width": 180,
+              "x": 19,
+              "y": 169.00668334960938
+            },
+            "props": {
+              "text": "Get Usage"
+            },
+            "type": "ia.input.button"
+          },
+          {
+            "custom": {
+              "dataset": {
+                "$": [
+                  "ds",
+                  192,
+                  1689467380317
+                ],
+                "$columns": [
+                  {
+                    "data": [
+                      0
+                    ],
+                    "name": "Sun",
+                    "type": "Double"
+                  },
+                  {
+                    "data": [
+                      2.43
+                    ],
+                    "name": "Mon",
+                    "type": "Double"
+                  },
+                  {
+                    "data": [
+                      1.08
+                    ],
+                    "name": "Tue",
+                    "type": "Double"
+                  },
+                  {
+                    "data": [
+                      0.18
+                    ],
+                    "name": "Wed",
+                    "type": "Double"
+                  },
+                  {
+                    "data": [
+                      3.72
+                    ],
+                    "name": "Thu",
+                    "type": "Double"
+                  },
+                  {
+                    "data": [
+                      0.47
+                    ],
+                    "name": "Fri",
+                    "type": "Double"
+                  },
+                  {
+                    "data": [
+                      0
+                    ],
+                    "name": "Sat",
+                    "type": "Double"
+                  }
+                ]
+              },
+              "headers": [
+                "Sun",
+                "Mon",
+                "Tue",
+                "Wed",
+                "Thu",
+                "Fri",
+                "Sat"
+              ],
+              "values": [
+                [
+                  0,
+                  2.43,
+                  1.08,
+                  0.18,
+                  3.72,
+                  0.47,
+                  0
+                ]
+              ]
+            },
+            "meta": {
+              "name": "Table"
+            },
+            "position": {
+              "height": 399.99999999999994,
+              "width": 762,
+              "x": 19.33,
+              "y": 223.3
+            },
+            "props": {
+              "columns": [
+                {
+                  "align": "center",
+                  "boolean": "checkbox",
+                  "dateFormat": "MM/DD/YYYY HH:mm:ss",
+                  "editable": false,
+                  "field": "time",
+                  "filter": {
+                    "boolean": {
+                      "condition": ""
+                    },
+                    "date": {
+                      "condition": "",
+                      "value": ""
+                    },
+                    "enabled": false,
+                    "number": {
+                      "condition": "",
+                      "value": ""
+                    },
+                    "string": {
+                      "condition": "",
+                      "value": ""
+                    },
+                    "visible": "on-hover"
+                  },
+                  "footer": {
+                    "align": "center",
+                    "justify": "left",
+                    "style": {
+                      "classes": ""
+                    },
+                    "title": ""
+                  },
+                  "header": {
+                    "align": "center",
+                    "justify": "left",
+                    "style": {
+                      "classes": ""
+                    },
+                    "title": ""
+                  },
+                  "justify": "auto",
+                  "nullFormat": {
+                    "includeNullStrings": false,
+                    "nullFormatValue": "",
+                    "strict": false
+                  },
+                  "number": "value",
+                  "numberFormat": "none",
+                  "progressBar": {
+                    "bar": {
+                      "color": "",
+                      "style": {
+                        "classes": ""
+                      }
+                    },
+                    "max": 100,
+                    "min": 0,
+                    "track": {
+                      "color": "",
+                      "style": {
+                        "classes": ""
+                      }
+                    },
+                    "value": {
+                      "enabled": true,
+                      "format": "0,0.##",
+                      "justify": "center",
+                      "style": {
+                        "classes": ""
+                      }
+                    }
+                  },
+                  "render": "auto",
+                  "resizable": true,
+                  "sort": "none",
+                  "sortable": false,
+                  "strictWidth": false,
+                  "style": {
+                    "classes": ""
+                  },
+                  "toggleSwitch": {
+                    "color": {
+                      "selected": "",
+                      "unselected": ""
+                    }
+                  },
+                  "viewParams": {},
+                  "viewPath": "",
+                  "visible": true,
+                  "width": 150
+                },
+                {
+                  "align": "center",
+                  "boolean": "checkbox",
+                  "dateFormat": "MM/DD/YYYY",
+                  "editable": false,
+                  "field": "Sun",
+                  "filter": {
+                    "boolean": {
+                      "condition": ""
+                    },
+                    "date": {
+                      "condition": "",
+                      "value": ""
+                    },
+                    "enabled": false,
+                    "number": {
+                      "condition": "",
+                      "value": ""
+                    },
+                    "string": {
+                      "condition": "",
+                      "value": ""
+                    },
+                    "visible": "on-hover"
+                  },
+                  "footer": {
+                    "align": "center",
+                    "justify": "left",
+                    "style": {
+                      "classes": ""
+                    },
+                    "title": ""
+                  },
+                  "header": {
+                    "align": "center",
+                    "justify": "left",
+                    "style": {
+                      "classes": ""
+                    },
+                    "title": ""
+                  },
+                  "justify": "auto",
+                  "nullFormat": {
+                    "includeNullStrings": false,
+                    "nullFormatValue": "",
+                    "strict": false
+                  },
+                  "number": "value",
+                  "numberFormat": "0,0.##",
+                  "progressBar": {
+                    "bar": {
+                      "color": "",
+                      "style": {
+                        "classes": ""
+                      }
+                    },
+                    "max": 100,
+                    "min": 0,
+                    "track": {
+                      "color": "",
+                      "style": {
+                        "classes": ""
+                      }
+                    },
+                    "value": {
+                      "enabled": true,
+                      "format": "0,0.##",
+                      "justify": "center",
+                      "style": {
+                        "classes": ""
+                      }
+                    }
+                  },
+                  "render": "auto",
+                  "resizable": true,
+                  "sort": "none",
+                  "sortable": false,
+                  "strictWidth": false,
+                  "style": {
+                    "classes": ""
+                  },
+                  "toggleSwitch": {
+                    "color": {
+                      "selected": "",
+                      "unselected": ""
+                    }
+                  },
+                  "viewParams": {},
+                  "viewPath": "",
+                  "visible": true,
+                  "width": 75
+                },
+                {
+                  "align": "center",
+                  "boolean": "checkbox",
+                  "dateFormat": "MM/DD/YYYY",
+                  "editable": false,
+                  "field": "Mon",
+                  "filter": {
+                    "boolean": {
+                      "condition": ""
+                    },
+                    "date": {
+                      "condition": "",
+                      "value": ""
+                    },
+                    "enabled": false,
+                    "number": {
+                      "condition": "",
+                      "value": ""
+                    },
+                    "string": {
+                      "condition": "",
+                      "value": ""
+                    },
+                    "visible": "on-hover"
+                  },
+                  "footer": {
+                    "align": "center",
+                    "justify": "left",
+                    "style": {
+                      "classes": ""
+                    },
+                    "title": ""
+                  },
+                  "header": {
+                    "align": "center",
+                    "justify": "left",
+                    "style": {
+                      "classes": ""
+                    },
+                    "title": ""
+                  },
+                  "justify": "auto",
+                  "nullFormat": {
+                    "includeNullStrings": false,
+                    "nullFormatValue": "",
+                    "strict": false
+                  },
+                  "number": "value",
+                  "numberFormat": "0,0.##",
+                  "progressBar": {
+                    "bar": {
+                      "color": "",
+                      "style": {
+                        "classes": ""
+                      }
+                    },
+                    "max": 100,
+                    "min": 0,
+                    "track": {
+                      "color": "",
+                      "style": {
+                        "classes": ""
+                      }
+                    },
+                    "value": {
+                      "enabled": true,
+                      "format": "0,0.##",
+                      "justify": "center",
+                      "style": {
+                        "classes": ""
+                      }
+                    }
+                  },
+                  "render": "auto",
+                  "resizable": true,
+                  "sort": "none",
+                  "sortable": false,
+                  "strictWidth": false,
+                  "style": {
+                    "classes": ""
+                  },
+                  "toggleSwitch": {
+                    "color": {
+                      "selected": "",
+                      "unselected": ""
+                    }
+                  },
+                  "viewParams": {},
+                  "viewPath": "",
+                  "visible": true,
+                  "width": 75
+                },
+                {
+                  "align": "center",
+                  "boolean": "checkbox",
+                  "dateFormat": "MM/DD/YYYY",
+                  "editable": false,
+                  "field": "Tue",
+                  "filter": {
+                    "boolean": {
+                      "condition": ""
+                    },
+                    "date": {
+                      "condition": "",
+                      "value": ""
+                    },
+                    "enabled": false,
+                    "number": {
+                      "condition": "",
+                      "value": ""
+                    },
+                    "string": {
+                      "condition": "",
+                      "value": ""
+                    },
+                    "visible": "on-hover"
+                  },
+                  "footer": {
+                    "align": "center",
+                    "justify": "left",
+                    "style": {
+                      "classes": ""
+                    },
+                    "title": ""
+                  },
+                  "header": {
+                    "align": "center",
+                    "justify": "left",
+                    "style": {
+                      "classes": ""
+                    },
+                    "title": ""
+                  },
+                  "justify": "auto",
+                  "nullFormat": {
+                    "includeNullStrings": false,
+                    "nullFormatValue": "",
+                    "strict": false
+                  },
+                  "number": "value",
+                  "numberFormat": "0,0.##",
+                  "progressBar": {
+                    "bar": {
+                      "color": "",
+                      "style": {
+                        "classes": ""
+                      }
+                    },
+                    "max": 100,
+                    "min": 0,
+                    "track": {
+                      "color": "",
+                      "style": {
+                        "classes": ""
+                      }
+                    },
+                    "value": {
+                      "enabled": true,
+                      "format": "0,0.##",
+                      "justify": "center",
+                      "style": {
+                        "classes": ""
+                      }
+                    }
+                  },
+                  "render": "auto",
+                  "resizable": true,
+                  "sort": "none",
+                  "sortable": false,
+                  "strictWidth": false,
+                  "style": {
+                    "classes": ""
+                  },
+                  "toggleSwitch": {
+                    "color": {
+                      "selected": "",
+                      "unselected": ""
+                    }
+                  },
+                  "viewParams": {},
+                  "viewPath": "",
+                  "visible": true,
+                  "width": 75
+                },
+                {
+                  "align": "center",
+                  "boolean": "checkbox",
+                  "dateFormat": "MM/DD/YYYY",
+                  "editable": false,
+                  "field": "Wed",
+                  "filter": {
+                    "boolean": {
+                      "condition": ""
+                    },
+                    "date": {
+                      "condition": "",
+                      "value": ""
+                    },
+                    "enabled": false,
+                    "number": {
+                      "condition": "",
+                      "value": ""
+                    },
+                    "string": {
+                      "condition": "",
+                      "value": ""
+                    },
+                    "visible": "on-hover"
+                  },
+                  "footer": {
+                    "align": "center",
+                    "justify": "left",
+                    "style": {
+                      "classes": ""
+                    },
+                    "title": ""
+                  },
+                  "header": {
+                    "align": "center",
+                    "justify": "left",
+                    "style": {
+                      "classes": ""
+                    },
+                    "title": ""
+                  },
+                  "justify": "auto",
+                  "nullFormat": {
+                    "includeNullStrings": false,
+                    "nullFormatValue": "",
+                    "strict": false
+                  },
+                  "number": "value",
+                  "numberFormat": "0,0.##",
+                  "progressBar": {
+                    "bar": {
+                      "color": "",
+                      "style": {
+                        "classes": ""
+                      }
+                    },
+                    "max": 100,
+                    "min": 0,
+                    "track": {
+                      "color": "",
+                      "style": {
+                        "classes": ""
+                      }
+                    },
+                    "value": {
+                      "enabled": true,
+                      "format": "0,0.##",
+                      "justify": "center",
+                      "style": {
+                        "classes": ""
+                      }
+                    }
+                  },
+                  "render": "auto",
+                  "resizable": true,
+                  "sort": "none",
+                  "sortable": false,
+                  "strictWidth": false,
+                  "style": {
+                    "classes": ""
+                  },
+                  "toggleSwitch": {
+                    "color": {
+                      "selected": "",
+                      "unselected": ""
+                    }
+                  },
+                  "viewParams": {},
+                  "viewPath": "",
+                  "visible": true,
+                  "width": 75
+                },
+                {
+                  "align": "center",
+                  "boolean": "checkbox",
+                  "dateFormat": "MM/DD/YYYY",
+                  "editable": false,
+                  "field": "Thu",
+                  "filter": {
+                    "boolean": {
+                      "condition": ""
+                    },
+                    "date": {
+                      "condition": "",
+                      "value": ""
+                    },
+                    "enabled": false,
+                    "number": {
+                      "condition": "",
+                      "value": ""
+                    },
+                    "string": {
+                      "condition": "",
+                      "value": ""
+                    },
+                    "visible": "on-hover"
+                  },
+                  "footer": {
+                    "align": "center",
+                    "justify": "left",
+                    "style": {
+                      "classes": ""
+                    },
+                    "title": ""
+                  },
+                  "header": {
+                    "align": "center",
+                    "justify": "left",
+                    "style": {
+                      "classes": ""
+                    },
+                    "title": ""
+                  },
+                  "justify": "auto",
+                  "nullFormat": {
+                    "includeNullStrings": false,
+                    "nullFormatValue": "",
+                    "strict": false
+                  },
+                  "number": "value",
+                  "numberFormat": "0,0.##",
+                  "progressBar": {
+                    "bar": {
+                      "color": "",
+                      "style": {
+                        "classes": ""
+                      }
+                    },
+                    "max": 100,
+                    "min": 0,
+                    "track": {
+                      "color": "",
+                      "style": {
+                        "classes": ""
+                      }
+                    },
+                    "value": {
+                      "enabled": true,
+                      "format": "0,0.##",
+                      "justify": "center",
+                      "style": {
+                        "classes": ""
+                      }
+                    }
+                  },
+                  "render": "auto",
+                  "resizable": true,
+                  "sort": "none",
+                  "sortable": false,
+                  "strictWidth": false,
+                  "style": {
+                    "classes": ""
+                  },
+                  "toggleSwitch": {
+                    "color": {
+                      "selected": "",
+                      "unselected": ""
+                    }
+                  },
+                  "viewParams": {},
+                  "viewPath": "",
+                  "visible": true,
+                  "width": 75
+                },
+                {
+                  "align": "center",
+                  "boolean": "checkbox",
+                  "dateFormat": "MM/DD/YYYY",
+                  "editable": false,
+                  "field": "Fri",
+                  "filter": {
+                    "boolean": {
+                      "condition": ""
+                    },
+                    "date": {
+                      "condition": "",
+                      "value": ""
+                    },
+                    "enabled": false,
+                    "number": {
+                      "condition": "",
+                      "value": ""
+                    },
+                    "string": {
+                      "condition": "",
+                      "value": ""
+                    },
+                    "visible": "on-hover"
+                  },
+                  "footer": {
+                    "align": "center",
+                    "justify": "left",
+                    "style": {
+                      "classes": ""
+                    },
+                    "title": ""
+                  },
+                  "header": {
+                    "align": "center",
+                    "justify": "left",
+                    "style": {
+                      "classes": ""
+                    },
+                    "title": ""
+                  },
+                  "justify": "auto",
+                  "nullFormat": {
+                    "includeNullStrings": false,
+                    "nullFormatValue": "",
+                    "strict": false
+                  },
+                  "number": "value",
+                  "numberFormat": "0,0.##",
+                  "progressBar": {
+                    "bar": {
+                      "color": "",
+                      "style": {
+                        "classes": ""
+                      }
+                    },
+                    "max": 100,
+                    "min": 0,
+                    "track": {
+                      "color": "",
+                      "style": {
+                        "classes": ""
+                      }
+                    },
+                    "value": {
+                      "enabled": true,
+                      "format": "0,0.##",
+                      "justify": "center",
+                      "style": {
+                        "classes": ""
+                      }
+                    }
+                  },
+                  "render": "auto",
+                  "resizable": true,
+                  "sort": "none",
+                  "sortable": false,
+                  "strictWidth": false,
+                  "style": {
+                    "classes": ""
+                  },
+                  "toggleSwitch": {
+                    "color": {
+                      "selected": "",
+                      "unselected": ""
+                    }
+                  },
+                  "viewParams": {},
+                  "viewPath": "",
+                  "visible": true,
+                  "width": 75
+                },
+                {
+                  "align": "center",
+                  "boolean": "checkbox",
+                  "dateFormat": "MM/DD/YYYY",
+                  "editable": false,
+                  "field": "Sat",
+                  "filter": {
+                    "boolean": {
+                      "condition": ""
+                    },
+                    "date": {
+                      "condition": "",
+                      "value": ""
+                    },
+                    "enabled": false,
+                    "number": {
+                      "condition": "",
+                      "value": ""
+                    },
+                    "string": {
+                      "condition": "",
+                      "value": ""
+                    },
+                    "visible": "on-hover"
+                  },
+                  "footer": {
+                    "align": "center",
+                    "justify": "left",
+                    "style": {
+                      "classes": ""
+                    },
+                    "title": ""
+                  },
+                  "header": {
+                    "align": "center",
+                    "justify": "left",
+                    "style": {
+                      "classes": ""
+                    },
+                    "title": ""
+                  },
+                  "justify": "auto",
+                  "nullFormat": {
+                    "includeNullStrings": false,
+                    "nullFormatValue": "",
+                    "strict": false
+                  },
+                  "number": "value",
+                  "numberFormat": "0,0.##",
+                  "progressBar": {
+                    "bar": {
+                      "color": "",
+                      "style": {
+                        "classes": ""
+                      }
+                    },
+                    "max": 100,
+                    "min": 0,
+                    "track": {
+                      "color": "",
+                      "style": {
+                        "classes": ""
+                      }
+                    },
+                    "value": {
+                      "enabled": true,
+                      "format": "0,0.##",
+                      "justify": "center",
+                      "style": {
+                        "classes": ""
+                      }
+                    }
+                  },
+                  "render": "auto",
+                  "resizable": true,
+                  "sort": "none",
+                  "sortable": false,
+                  "strictWidth": false,
+                  "style": {
+                    "classes": ""
+                  },
+                  "toggleSwitch": {
+                    "color": {
+                      "selected": "",
+                      "unselected": ""
+                    }
+                  },
+                  "viewParams": {},
+                  "viewPath": "",
+                  "visible": true,
+                  "width": 75
+                }
+              ],
+              "data": {
+                "$": [
+                  "ds",
+                  192,
+                  1707709741194
+                ],
+                "$columns": [
+                  {
+                    "data": [
+                      1707709741182
+                    ],
+                    "name": "time",
+                    "type": "Date"
+                  },
+                  {
+                    "data": [
+                      7.13
+                    ],
+                    "name": "Mon",
+                    "type": "Double"
+                  },
+                  {
+                    "data": [
+                      1.38
+                    ],
+                    "name": "Tue",
+                    "type": "Double"
+                  },
+                  {
+                    "data": [
+                      1.14
+                    ],
+                    "name": "Wed",
+                    "type": "Double"
+                  },
+                  {
+                    "data": [
+                      11.23
+                    ],
+                    "name": "Thu",
+                    "type": "Double"
+                  },
+                  {
+                    "data": [
+                      3.96
+                    ],
+                    "name": "Fri",
+                    "type": "Double"
+                  },
+                  {
+                    "data": [
+                      15.88
+                    ],
+                    "name": "Sat",
+                    "type": "Double"
+                  },
+                  {
+                    "data": [
+                      0.2
+                    ],
+                    "name": "Sun",
+                    "type": "Double"
+                  }
+                ]
+              },
+              "pager": {
+                "bottom": false
+              },
+              "selection": {
+                "data": [
+                  {
+                    "Fri": 3.96,
+                    "Mon": 7.13,
+                    "Sat": 15.88,
+                    "Sun": 0.2,
+                    "Thu": 11.23,
+                    "Tue": 1.38,
+                    "Wed": 1.14,
+                    "time": 1707709741182
+                  }
+                ],
+                "selectedColumn": "time",
+                "selectedRow": 0
+              }
+            },
+            "type": "ia.display.table"
+          }
+        ],
+        "custom": {
+          "authToken": "ZXlKaGJHY2lPaUpJVXpJMU5pSXNJblI1Y0NJNklrcFhWQ0o5LmV5Sm9kSFJ3T2k4dmMyTm9aVzFoY3k1NGJXeHpiMkZ3TG05eVp5OTNjeTh5TURBMUx6QTFMMmxrWlc1MGFYUjVMMk5zWVdsdGN5OXVZVzFsSWpvaVoyOXZaMnhsSWl3aWFIUjBjRG92TDNOamFHVnRZWE11ZUcxc2MyOWhjQzV2Y21jdmQzTXZNakF3TlM4d05TOXBaR1Z1ZEdsMGVTOWpiR0ZwYlhNdmJtRnRaV2xrWlc1MGFXWnBaWElpT2lJeE1EazBPVEl3T0RNMU16a3dNelV3TnpJM01UQWlMQ0pvZEhSd09pOHZjMk5vWlcxaGN5NTRiV3h6YjJGd0xtOXlaeTkzY3k4eU1EQTFMekExTDJsa1pXNTBhWFI1TDJOc1lXbHRjeTlsYldGcGJHRmtaSEpsYzNNaU9pSnlZWGw2YnprNE1EQTRRR2R0WVdsc0xtTnZiU0lzSW1GMVpDSTZJbVJsZG1salpTNWtaV3gwWVdaaGRXTmxkQzVqYjIwaUxDSmxlSEFpT2pFMk9UUTJNVFEyTkRjc0ltbHpjeUk2SW5SdmEyVnVMbVJsYkhSaFptRjFZMlYwTG1OdmJTSjkuTjRBVEpJeW1NWUlnSHdDZElsOGU4SHBySkZhaU1OVlU0Qk1JUnRLVy1saw\u003d\u003d",
+          "deviceId": "426e6a39f76149249f45156186bdf8be",
+          "url": "https://device.legacy.deltafaucet.com/"
+        },
+        "meta": {
+          "name": "CoordinateContainer"
+        },
+        "position": {
+          "grow": 1
+        },
+        "props": {
+          "aspectRatio": "1:1"
+        },
+        "type": "ia.container.coord"
+      }
+    ],
+    "meta": {
+      "name": "root"
+    },
+    "props": {
+      "direction": "column"
+    },
+    "type": "ia.container.flex"
+  }
+}

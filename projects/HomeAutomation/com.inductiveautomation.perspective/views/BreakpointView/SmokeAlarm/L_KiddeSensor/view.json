@@ -1,0 +1,222 @@
+{
+  "custom": {},
+  "params": {},
+  "props": {
+    "defaultSize": {
+      "width": 1280
+    }
+  },
+  "root": {
+    "children": [
+      {
+        "meta": {
+          "name": "Kidde Smoke Alarm Small"
+        },
+        "position": {
+          "basis": "320px",
+          "grow": 1
+        },
+        "propConfig": {
+          "props.params.connected": {
+            "binding": {
+              "config": {
+                "fallbackDelay": 2.5,
+                "mode": "direct",
+                "tagPath": "[default]sensors/kidde/connected"
+              },
+              "type": "tag"
+            }
+          },
+          "props.params.sensor": {
+            "binding": {
+              "config": {
+                "expression": "{[default]sensors/kidde/api/buffer}[{this.props.params.sensorNum}]"
+              },
+              "type": "expr"
+            }
+          }
+        },
+        "props": {
+          "params": {
+            "sensorNum": 0
+          },
+          "path": "Template/Kidde Smoke Alarm Small",
+          "style": {
+            "borderColor": "#000080",
+            "borderStyle": "solid",
+            "borderWidth": "3px"
+          }
+        },
+        "type": "ia.display.view"
+      },
+      {
+        "meta": {
+          "name": "Kidde Smoke Alarm Small_0"
+        },
+        "position": {
+          "basis": "320px",
+          "grow": 1
+        },
+        "propConfig": {
+          "props.params.connected": {
+            "binding": {
+              "config": {
+                "fallbackDelay": 2.5,
+                "mode": "direct",
+                "tagPath": "[default]sensors/kidde/connected"
+              },
+              "type": "tag"
+            }
+          },
+          "props.params.sensor": {
+            "binding": {
+              "config": {
+                "expression": "{[default]sensors/kidde/api/buffer}[{this.props.params.sensorNum}]"
+              },
+              "type": "expr"
+            }
+          }
+        },
+        "props": {
+          "params": {
+            "sensorNum": 1
+          },
+          "path": "Template/Kidde Smoke Alarm Small",
+          "style": {
+            "borderColor": "#000080",
+            "borderStyle": "solid",
+            "borderWidth": "3px"
+          }
+        },
+        "type": "ia.display.view"
+      },
+      {
+        "meta": {
+          "name": "Kidde Smoke Alarm Small_1"
+        },
+        "position": {
+          "basis": "320px",
+          "grow": 1
+        },
+        "propConfig": {
+          "props.params.connected": {
+            "binding": {
+              "config": {
+                "fallbackDelay": 2.5,
+                "mode": "direct",
+                "tagPath": "[default]sensors/kidde/connected"
+              },
+              "type": "tag"
+            }
+          },
+          "props.params.sensor": {
+            "binding": {
+              "config": {
+                "expression": "{[default]sensors/kidde/api/buffer}[{this.props.params.sensorNum}]"
+              },
+              "type": "expr"
+            }
+          }
+        },
+        "props": {
+          "params": {
+            "sensorNum": 2
+          },
+          "path": "Template/Kidde Smoke Alarm Small",
+          "style": {
+            "borderColor": "#000080",
+            "borderStyle": "solid",
+            "borderWidth": "3px"
+          }
+        },
+        "type": "ia.display.view"
+      },
+      {
+        "meta": {
+          "name": "Kidde Smoke Alarm Small_2"
+        },
+        "position": {
+          "basis": "320px",
+          "grow": 1
+        },
+        "propConfig": {
+          "props.params.connected": {
+            "binding": {
+              "config": {
+                "fallbackDelay": 2.5,
+                "mode": "direct",
+                "tagPath": "[default]sensors/kidde/connected"
+              },
+              "type": "tag"
+            }
+          },
+          "props.params.sensor": {
+            "binding": {
+              "config": {
+                "expression": "{[default]sensors/kidde/api/buffer}[{this.props.params.sensorNum}]"
+              },
+              "type": "expr"
+            }
+          }
+        },
+        "props": {
+          "params": {
+            "sensorNum": 3
+          },
+          "path": "Template/Kidde Smoke Alarm Small",
+          "style": {
+            "borderColor": "#000080",
+            "borderStyle": "solid",
+            "borderWidth": "3px"
+          }
+        },
+        "type": "ia.display.view"
+      },
+      {
+        "meta": {
+          "name": "Kidde Smoke Alarm Small_3"
+        },
+        "position": {
+          "basis": "320px",
+          "grow": 1
+        },
+        "propConfig": {
+          "props.params.connected": {
+            "binding": {
+              "config": {
+                "fallbackDelay": 2.5,
+                "mode": "direct",
+                "tagPath": "[default]sensors/kidde/connected"
+              },
+              "type": "tag"
+            }
+          },
+          "props.params.sensor": {
+            "binding": {
+              "config": {
+                "expression": "{[default]sensors/kidde/api/buffer}[{this.props.params.sensorNum}]"
+              },
+              "type": "expr"
+            }
+          }
+        },
+        "props": {
+          "params": {
+            "sensorNum": 4
+          },
+          "path": "Template/Kidde Smoke Alarm Small",
+          "style": {
+            "borderColor": "#000080",
+            "borderStyle": "solid",
+            "borderWidth": "3px"
+          }
+        },
+        "type": "ia.display.view"
+      }
+    ],
+    "meta": {
+      "name": "root"
+    },
+    "type": "ia.container.flex"
+  }
+}

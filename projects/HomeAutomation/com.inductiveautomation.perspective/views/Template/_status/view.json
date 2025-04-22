@@ -1,0 +1,171 @@
+{
+  "custom": {},
+  "params": {
+    "sensorNum": 0
+  },
+  "propConfig": {
+    "params.sensorNum": {
+      "paramDirection": "input",
+      "persistent": true
+    }
+  },
+  "props": {
+    "defaultSize": {
+      "height": 250,
+      "width": 150
+    }
+  },
+  "root": {
+    "children": [
+      {
+        "meta": {
+          "name": "Label_0"
+        },
+        "position": {
+          "basis": "32px"
+        },
+        "propConfig": {
+          "props.style.backgroundColor": {
+            "binding": {
+              "config": {
+                "fallbackDelay": 2.5,
+                "mode": "indirect",
+                "references": {
+                  "sensorNum": "{view.params.sensorNum}"
+                },
+                "tagPath": "[default]sensors/kidde/sensor_{sensorNum}/overall_iaq_status"
+              },
+              "transforms": [
+                {
+                  "fallback": "#D5D5D5",
+                  "inputType": "scalar",
+                  "mappings": [
+                    {
+                      "input": "Good",
+                      "output": "#00FF00"
+                    },
+                    {
+                      "input": "Moderate",
+                      "output": "#FF8C00"
+                    },
+                    {
+                      "input": "Bad",
+                      "output": "#FF0000"
+                    }
+                  ],
+                  "outputType": "color",
+                  "type": "map"
+                }
+              ],
+              "type": "tag"
+            }
+          },
+          "props.text": {
+            "binding": {
+              "config": {
+                "fallbackDelay": 2.5,
+                "mode": "indirect",
+                "references": {
+                  "sensorNum": "{view.params.sensorNum}"
+                },
+                "tagPath": "[default]sensors/kidde/sensor_{sensorNum}/overall_iaq_status"
+              },
+              "type": "tag"
+            }
+          }
+        },
+        "props": {
+          "textStyle": {
+            "textAlign": "center"
+          }
+        },
+        "type": "ia.display.label"
+      },
+      {
+        "meta": {
+          "name": "Icon"
+        },
+        "position": {
+          "basis": "200px"
+        },
+        "propConfig": {
+          "props.color": {
+            "binding": {
+              "config": {
+                "fallbackDelay": 2.5,
+                "mode": "indirect",
+                "references": {
+                  "sensorNum": "{view.params.sensorNum}"
+                },
+                "tagPath": "[default]sensors/kidde/sensor_{sensorNum}/overall_iaq_status"
+              },
+              "transforms": [
+                {
+                  "fallback": "#D5D5D5",
+                  "inputType": "scalar",
+                  "mappings": [
+                    {
+                      "input": "Good",
+                      "output": "#00FF00"
+                    },
+                    {
+                      "input": "Moderate",
+                      "output": "#FF8C00"
+                    },
+                    {
+                      "input": "Bad",
+                      "output": "#FF0000"
+                    }
+                  ],
+                  "outputType": "color",
+                  "type": "map"
+                }
+              ],
+              "type": "tag"
+            }
+          }
+        },
+        "props": {
+          "path": "material/security"
+        },
+        "type": "ia.display.icon"
+      },
+      {
+        "meta": {
+          "name": "Label"
+        },
+        "position": {
+          "basis": "32px"
+        },
+        "props": {
+          "text": "Overall",
+          "textStyle": {
+            "textAlign": "center"
+          }
+        },
+        "type": "ia.display.label"
+      },
+      {
+        "meta": {
+          "name": "FlexContainer"
+        },
+        "position": {
+          "basis": "10px",
+          "grow": 1,
+          "shrink": 0
+        },
+        "type": "ia.container.flex"
+      }
+    ],
+    "meta": {
+      "name": "root"
+    },
+    "props": {
+      "direction": "column",
+      "style": {
+        "overflow": "hidden"
+      }
+    },
+    "type": "ia.container.flex"
+  }
+}

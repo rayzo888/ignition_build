@@ -1,0 +1,65 @@
+{
+  "custom": {},
+  "params": {},
+  "permissions": {
+    "securityLevels": [
+      {
+        "children": [
+          {
+            "children": [
+              {
+                "children": [],
+                "name": "Owner"
+              }
+            ],
+            "name": "Roles"
+          }
+        ],
+        "name": "Authenticated"
+      }
+    ],
+    "type": "AllOf"
+  },
+  "props": {
+    "defaultSize": {
+      "height": 872,
+      "width": 430
+    },
+    "inputBehavior": "merge",
+    "loading": {
+      "mode": "blocking"
+    }
+  },
+  "root": {
+    "children": [
+      {
+        "meta": {
+          "name": "Small"
+        },
+        "props": {
+          "path": "BreakpointView/SmokeAlarm/S_KiddeSensor"
+        },
+        "type": "ia.display.view"
+      },
+      {
+        "meta": {
+          "name": "Large"
+        },
+        "position": {
+          "size": "large"
+        },
+        "props": {
+          "path": "BreakpointView/SmokeAlarm/L_KiddeSensor"
+        },
+        "type": "ia.display.view"
+      }
+    ],
+    "meta": {
+      "name": "root"
+    },
+    "props": {
+      "breakpoint": 1100
+    },
+    "type": "ia.container.breakpt"
+  }
+}
