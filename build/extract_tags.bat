@@ -3,7 +3,7 @@ setlocal enabledelayedexpansion
 
 :: Set Variables
 set EXPORT_TAGS_URL=http://centralhub.local:8088/system/webdev/HomeAutomation/utility/tagControl/exportTags
-set SRC_TAGFOLDER=%SRC_ROOT%\tags
+set SRC_TAGFOLDER=C:\Users\rayzo\Documents\Source Code\001_Ignition Build\ignition_build\tags
 
 :: Prompt user for input (string value)
 set /p USER_INPUT=Enter tag provider name: 
