@@ -2,7 +2,10 @@
 setlocal enabledelayedexpansion
 
 :: Set Variables
-set MOVE_PROJECTS_URL=http://centralhub.local:8088/system/webdev/HomeAutomation/utility/projectControl/moveFiles
+set HOSTNAME_IP=centralhub.local
+set PORT=8088
+set SCRIPT_SOURCE=HomeAutomation
+set MOVE_PROJECTS_URL=http://%HOSTNAME_IP%:%PORT%/system/webdev/%SCRIPT_SOURCE%/utility/projectControl/moveFiles
 set TARGET_PROJECTS_FOLDER="C:\\Users\\rayzo\\Documents\\Source%%20Code\\001_Ignition%%20Build\\ignition_build\\projects"
 set /p USER_INPUT=Enter project name: 
 
