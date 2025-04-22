@@ -1,0 +1,6 @@
+UPDATE_TAGS_URL=http://onebiopdv05x373:8088/system/webdev/MAST_Connect/utility/tagControl/updateTags
+TAGFOLDER=C:\\Users\\sadm-X276512\\Documents\\MAST\\SourceCode\\sandbox\\tags
+IGNROOT="C:\Program Files\Inductive Automation\Ignition"
+DEST_ROOT=C:\Program Files\Inductive Automation\Ignition\data
+SRC_ROOT=C:\Users\sadm-X276512\Documents\MAST\SourceCode\sandbox
+DEST_IGNBUILD_FILE=C:\Users\sadm-X276512\Documents\MAST\SourceCode\sandbox\.gateway_backups\gateway.gwbk

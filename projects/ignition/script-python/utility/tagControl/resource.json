@@ -1,0 +1,17 @@
+{
+  "scope": "A",
+  "version": 1,
+  "restricted": false,
+  "overridable": true,
+  "files": [
+    "code.py"
+  ],
+  "attributes": {
+    "lastModification": {
+      "actor": "MastService",
+      "timestamp": "2025-04-21T19:09:39Z"
+    },
+    "hintScope": 2,
+    "lastModificationSignature": "628e356b4a939febea6682b3f0b27d83a94d5acc3e777e2b177cbb866f8d8e58"
+  }
+}
