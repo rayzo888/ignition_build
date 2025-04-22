@@ -2,7 +2,7 @@
 setlocal enabledelayedexpansion
 
 :: Set Variables
-set EXPORT_TAGS_URL=http://onebiopdv05x373:8088/system/webdev/MAST_Connect/utility/tagControl/exportTags
+set EXPORT_TAGS_URL=http://centralhub.local:8088/system/webdev/HomeAutomation/utility/tagControl/exportTags
 set SRC_TAGFOLDER=%SRC_ROOT%\tags
 
 :: Prompt user for input (string value)
