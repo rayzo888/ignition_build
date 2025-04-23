@@ -1,6 +1,6 @@
 UPDATE_TAGS_URL=http://centralhub.local:8088/system/webdev/HomeAutomation/utility/tagControl/updateTags
-TAGFOLDER=C:\\Users\\rayzo\\Documents\\Source Code\\001_Ignition Build\ignition_build\\tags
+TAGFOLDER=C:\\Users\\LiewFamAdmin\\Documents\\Source Code\\001_Ignition Build\ignition_build\\tags
 IGNROOT="C:\Program Files\Inductive Automation\Ignition"
 DEST_ROOT=C:\Program Files\Inductive Automation\Ignition\data
-SRC_ROOT=C:\Users\rayzo\Documents\Source Code\001_Ignition Build\ignition_build
-DEST_IGNBUILD_FILE=C:\Users\rayzo\Documents\Source Code\001_Ignition Build\ignition_build\.gateway_backups\gateway.gwbk
+SRC_ROOT=C:\Users\LiewFamAdmin\Documents\Source Code\001_Ignition Build\ignition_build
+DEST_IGNBUILD_FILE=C:\Users\LiewFamAdmin\Documents\Source Code\001_Ignition Build\ignition_build\.gateway_backups\gateway.gwbk
