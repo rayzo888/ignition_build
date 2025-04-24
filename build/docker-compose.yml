@@ -1,0 +1,31 @@
+version: '3'
+
+services:
+  reverse-proxy:
+    # The official v3 Traefik docker image
+    image: traefik:v3.3
+    # Enables the web UI and tells Traefik to listen to docker
+    command: --api.insecure=true --providers.docker
+    ports:
+      # The HTTP port
+      - "8080:80"
+      # The Web UI (enabled by --api.insecure=true)
+      - "9080:8080"
+    volumes:
+      # So that Traefik can listen to the Docker events
+      - /var/run/docker.sock:/var/run/docker.sock
+
+  ignition:
+    image: inductiveautomation/ignition:latest
+    container_name: ignition_gateway
+    ports:
+      - "80:8088"  # HTTP Port
+    volumes:
+      - ..\projects:/usr/local/bin/ignition/data/projects
+      - ..\db:/usr/local/bin/ignition/data/db
+    environment:
+      - ACCEPT_IGNITION_EULA=Y
+      - IGNITION_EDITION=standard  # Or use 'enterprise' if applicable
+    restart: unless-stopped
+    labels:
+      - "traefik.http.routers.ignition.rule=Host(`ignition.local`)"
