@@ -3,10 +3,10 @@ setlocal enabledelayedexpansion
 
 :: Set Variables
 set HOSTNAME_IP=ignition.local
-set PORT=8088
+set PORT=
 set SCRIPT_SOURCE=HomeAutomation
-set EXPORT_TAGS_URL=http://%HOSTNAME_IP%:%PORT%/system/webdev/%SCRIPT_SOURCE%/utility/tagControl/exportTags
-set SRC_TAGFOLDER=C:\\Users\\rayzo\\Documents\\Source%%20Code\\001_Ignition%%20Build\\ignition_build\\tags
+set EXPORT_TAGS_URL=http://%HOSTNAME_IP%/system/webdev/%SCRIPT_SOURCE%/utility/tagControl/exportTags
+set SRC_TAGFOLDER=/usr/local/bin/ignition/data/tags
 
 :: Prompt user for input (string value)
 set /p USER_INPUT=Enter tag provider name: 

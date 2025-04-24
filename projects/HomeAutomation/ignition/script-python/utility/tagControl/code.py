@@ -42,7 +42,7 @@ def exportTag(tagFileFolder, tagProvider):
 	'''
 	tagProviderStr = tagProvider if isinstance(tagProvider, str) else "%s"%(tagProvider)
 	tagPath = "[" + tagProviderStr + "]"
-	filePath = tagFileFolder + "\\" +  tagProviderStr + ".json"
+	filePath = tagFileFolder + "/" +  tagProviderStr + ".json"
 	tagPaths = [tagPath]
 	res = system.tag.exportTags(filePath, tagPaths, recursive = True, exportType = 'json')
 	return res

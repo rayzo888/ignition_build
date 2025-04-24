@@ -21,8 +21,9 @@ services:
     ports:
       - "80:8088"  # HTTP Port
     volumes:
-      - ..\projects:/usr/local/bin/ignition/data/projects
-      - ..\db:/usr/local/bin/ignition/data/db
+      - ../projects:/usr/local/bin/ignition/data/projects
+      - ../db:/usr/local/bin/ignition/data/db
+      - ../tags:/usr/local/bin/ignition/data/tags
     environment:
       - ACCEPT_IGNITION_EULA=Y
       - IGNITION_EDITION=standard  # Or use 'enterprise' if applicable
