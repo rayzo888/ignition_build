@@ -34,3 +34,13 @@ services:
     restart: unless-stopped
     labels:
       - "traefik.http.routers.ignition.rule=Host(`ignition.local`)"
+  
+  script-runner:
+    image: alpine
+    depends_on:
+      ignition:
+        condition: service_healthy
+    volumes:
+      - ./update_tags.sh:/update_tags.sh
+    entrypoint: ["/bin/sh", "-c", "apk add --no-cache curl && /update_tags.sh"]
+    restart: "no"
