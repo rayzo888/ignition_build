@@ -24,9 +24,13 @@ services:
       - ../projects:/usr/local/bin/ignition/data/projects
       - ../db:/usr/local/bin/ignition/data/db
       - ../tags:/usr/local/bin/ignition/data/tags
+      - ../config/ignition.conf:/usr/local/bin/ignition/data/ignition.conf
     environment:
       - ACCEPT_IGNITION_EULA=Y
       - IGNITION_EDITION=standard  # Or use 'enterprise' if applicable
+      - IGNITION_LICENSE_KEY=${IGNITION_LICENSE_KEY}
+      - IGNITION_ACTIVATION_TOKEN=${IGNITION_ACTIVATION_TOKEN}
+      - GATEWAY_MODULES_ENABLED=enterprise-administration,logix-driver,mitsubishi-driver,modbus-driver-v2,opc-ua,perspective,reporting,sql-bridge,symbol-factory,tag-historian,udp-tcp-drivers,web-browser,web-developer
     restart: unless-stopped
     labels:
       - "traefik.http.routers.ignition.rule=Host(`ignition.local`)"
