@@ -2,7 +2,7 @@
 setlocal enabledelayedexpansion
 
 :: Set Variables
-set HOSTNAME_IP=centralhub.local
+set HOSTNAME_IP=ignition.local
 set PORT=8088
 set SCRIPT_SOURCE=HomeAutomation
 set EXPORT_TAGS_URL=http://%HOSTNAME_IP%:%PORT%/system/webdev/%SCRIPT_SOURCE%/utility/tagControl/exportTags
