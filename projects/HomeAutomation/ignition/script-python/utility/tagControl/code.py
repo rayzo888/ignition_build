@@ -62,7 +62,7 @@ def importTag(tagFileFolder, tagProvider):
 	'''
 	tagProviderStr = tagProvider if isinstance(tagProvider, str) else ord(tagProvider)
 	tagPath = "[" + tagProviderStr + "]"
-	filePath = tagFileFolder + "\\" +  tagProviderStr + ".json"
+	filePath = tagFileFolder + "/" +  tagProviderStr + ".json"
 	basePath = tagPath
 	collisionPolicy = 'o' #only use overwrite
 	res = system.tag.importTags(filePath, basePath, collisionPolicy)
