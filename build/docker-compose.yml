@@ -1,5 +1,3 @@
-version: '3'
-
 services:
   reverse-proxy:
     # The official v3 Traefik docker image
@@ -21,20 +19,20 @@ services:
     ports:
       - "80:8088"  # HTTP Port
     volumes:
+      - ./entrypoint.sh:/usr/local/bin/entrypoint.sh
       - ../projects:/usr/local/bin/ignition/data/projects
       - ../db:/usr/local/bin/ignition/data/db
       - ../tags:/usr/local/bin/ignition/data/tags
+      - ../leased-activation:/usr/local/bin/ignition/data/leased-activation
       - ../config/ignition.conf:/usr/local/bin/ignition/data/ignition.conf
     environment:
       - ACCEPT_IGNITION_EULA=Y
-      - IGNITION_EDITION=maker  # Or use 'enterprise' if applicable
-      - IGNITION_LICENSE_KEY=${IGNITION_LICENSE_KEY}
-      - IGNITION_ACTIVATION_TOKEN=${IGNITION_ACTIVATION_TOKEN}
+      - IGNITION_EDITION=maker
       - GATEWAY_MODULES_ENABLED=enterprise-administration,logix-driver,mitsubishi-driver,modbus-driver-v2,opc-ua,perspective,reporting,sql-bridge,symbol-factory,tag-historian,udp-tcp-drivers,web-browser,web-developer
     restart: unless-stopped
     labels:
       - "traefik.http.routers.ignition.rule=Host(`ignition.local`)"
-  
+
   script-runner:
     image: alpine
     depends_on:
