@@ -27,7 +27,7 @@ services:
       - ../config/ignition.conf:/usr/local/bin/ignition/data/ignition.conf
     environment:
       - ACCEPT_IGNITION_EULA=Y
-      - IGNITION_EDITION=standard  # Or use 'enterprise' if applicable
+      - IGNITION_EDITION=maker  # Or use 'enterprise' if applicable
       - IGNITION_LICENSE_KEY=${IGNITION_LICENSE_KEY}
       - IGNITION_ACTIVATION_TOKEN=${IGNITION_ACTIVATION_TOKEN}
       - GATEWAY_MODULES_ENABLED=enterprise-administration,logix-driver,mitsubishi-driver,modbus-driver-v2,opc-ua,perspective,reporting,sql-bridge,symbol-factory,tag-historian,udp-tcp-drivers,web-browser,web-developer
