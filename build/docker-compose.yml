@@ -19,7 +19,6 @@ services:
     ports:
       - "80:8088"  # HTTP Port
     volumes:
-      - ./entrypoint.sh:/usr/local/bin/entrypoint.sh
       - ../projects:/usr/local/bin/ignition/data/projects
       - ../db:/usr/local/bin/ignition/data/db
       - ../tags:/usr/local/bin/ignition/data/tags
