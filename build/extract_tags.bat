@@ -2,7 +2,7 @@
 setlocal enabledelayedexpansion
 
 :: Set Variables
-set HOSTNAME_IP=ignition.local
+set HOSTNAME_IP=liewfam.ignition.local
 set PORT=
 set SCRIPT_SOURCE=HomeAutomation
 set EXPORT_TAGS_URL=http://%HOSTNAME_IP%/system/webdev/%SCRIPT_SOURCE%/utility/tagControl/exportTags

@@ -3,15 +3,18 @@ services:
     # The official v3 Traefik docker image
     image: traefik:v3.3
     # Enables the web UI and tells Traefik to listen to docker
-    command: --api.insecure=true --providers.docker
+    command: 
+      - --api.dashboard=true
+      - --api.insecure=true
+      - --providers.docker=true
+      - --entrypoints.web.address=:80
     ports:
-      # The HTTP port
-      - "80:80"
-      # The Web UI (enabled by --api.insecure=true)
-      - "8080:8080"
+      - "80:80" # HTTP Port
+      - "443:443" #HTTPS Port
+      - "8080:8080" # Traefik Dashboard
     volumes:
-      # So that Traefik can listen to the Docker events
       - /var/run/docker.sock:/var/run/docker.sock
+      - ./letsencrypt:/letsencrypt
 
   ignition:
     image: inductiveautomation/ignition:latest
@@ -30,7 +33,10 @@ services:
       - GATEWAY_MODULES_ENABLED=enterprise-administration,logix-driver,mitsubishi-driver,modbus-driver-v2,opc-ua,perspective,reporting,sql-bridge,symbol-factory,tag-historian,udp-tcp-drivers,web-browser,web-developer
     restart: unless-stopped
     labels:
-      - "traefik.http.routers.ignition.rule=Host(`ignition.local`)"
+      - "traefik.enable=true"
+      - "traefik.http.routers.ignition.rule=Host(`liewfam.ignition.local`)"
+      - "traefik.http.routers.ignition.entrypoints=web"
+      - "traefik.http.services.ignition.loadbalancer.server.port=8088"
 
   script-runner:
     image: alpine
@@ -41,3 +47,5 @@ services:
       - ./update_tags.sh:/update_tags.sh
     entrypoint: ["/bin/sh", "-c", "apk add --no-cache curl && /update_tags.sh"]
     restart: "no"
+    labels:
+      - "traefik.enable=false"
