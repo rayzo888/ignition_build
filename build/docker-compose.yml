@@ -1,4 +1,17 @@
 services:
+  postgres:
+    image: postgres:15
+    container_name: liewfam_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: LiewFam
+      POSTGRES_PASSWORD: Lsloong88-  # Default password (change for production)
+      POSTGRES_DB: db_liewfam
+    ports:
+      - "5432:5432"
+    volumes:
+      - ../postgres_db:/var/lib/postgresql/data
+  
   reverse-proxy:
     # The official v3 Traefik docker image
     image: traefik:v3.3
@@ -34,7 +47,7 @@ services:
     environment:
       - ACCEPT_IGNITION_EULA=Y
       - IGNITION_EDITION=maker
-      - GATEWAY_MODULES_ENABLED=enterprise-administration,logix-driver,mitsubishi-driver,modbus-driver-v2,opc-ua,perspective,reporting,sql-bridge,symbol-factory,tag-historian,udp-tcp-drivers,web-browser,web-developer
+      - GATEWAY_MODULES_ENABLED=logix-driver,mitsubishi-driver,modbus-driver-v2,opc-ua,perspective,reporting,sql-bridge,tag-historian,udp-tcp-drivers,web-developer
     restart: unless-stopped
     labels:
       - "traefik.enable=true"
