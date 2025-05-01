@@ -49,6 +49,8 @@ services:
       - IGNITION_EDITION=maker
       - GATEWAY_MODULES_ENABLED=logix-driver,mitsubishi-driver,modbus-driver-v2,opc-ua,perspective,reporting,sql-bridge,tag-historian,udp-tcp-drivers,web-developer
     restart: unless-stopped
+    command:
+      -n ignition-centralhub
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.ignition.rule=Host(`liew-home.ddns.net`)"

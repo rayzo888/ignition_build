@@ -1,9 +1,9 @@
 #!/bin/sh
 
 # Set variables
-UPDATE_TAGS_URL="http://liewfam.ignition.local/system/webdev/HomeAutomation/utility/tagControl/updateTags"
+UPDATE_TAGS_URL="http://liew-home.ddns.net/system/webdev/HomeAutomation/utility/tagControl/updateTags"
 TAGFOLDER="/usr/local/bin/ignition/data/tags"
-CHECK_GWINFO_URL="http://liewfam.ignition.local/system/gwinfo"
+CHECK_GWINFO_URL="http://liew-home.ddns.net/system/gwinfo"
 
 echo "Waiting for Gateway to report RUNNING..."
 
