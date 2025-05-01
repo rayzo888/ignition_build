@@ -2,9 +2,9 @@
 setlocal
 
 ::set variables
-set UPDATE_TAGS_URL=http://liewfam.ignition.local/system/webdev/HomeAutomation/utility/tagControl/updateTags
+set UPDATE_TAGS_URL=http://liew-home.ddns.net/system/webdev/HomeAutomation/utility/tagControl/updateTags
 set TAGFOLDER=/usr/local/bin/ignition/data/tags
-set CHECK_GWINFO_URL=http://liewfam.ignition.local/system/gwinfo
+set CHECK_GWINFO_URL=http://liew-home.ddns.net/system/gwinfo
 set check_status=curl -X GET %CHECK_GWINFO_URL%
 
 echo Waiting for Gateway to report RUNNING...

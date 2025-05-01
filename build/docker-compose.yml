@@ -8,6 +8,10 @@ services:
       - --api.insecure=true
       - --providers.docker=true
       - --entrypoints.web.address=:80
+      # - --entrypoints.websecure.address=:443
+      # - --certificatesresolvers.myresolver.acme.tlschallenge=true
+      # - --certificatesresolvers.myresolver.acme.email=you@example.com
+      # - --certificatesresolvers.myresolver.acme.storage=/acme.json
     ports:
       - "80:80" # HTTP Port
       - "443:443" #HTTPS Port
@@ -34,10 +38,13 @@ services:
     restart: unless-stopped
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.ignition.rule=Host(`liewfam.ignition.local`)"
+      - "traefik.http.routers.ignition.rule=Host(`liew-home.ddns.net`)"
       - "traefik.http.routers.ignition.entrypoints=web"
       - "traefik.http.services.ignition.loadbalancer.server.port=8088"
-
+      # - "traefik.http.routers.ignition.entrypoints=websecure"
+      # - "traefik.http.routers.ignition.tls.certresolver=myresolver"
+    # networks:
+    #     - web
   script-runner:
     image: alpine
     depends_on:
