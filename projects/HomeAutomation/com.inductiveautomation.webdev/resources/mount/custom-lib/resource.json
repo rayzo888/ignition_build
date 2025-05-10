@@ -4,13 +4,13 @@
   "restricted": false,
   "overridable": true,
   "files": [
-    "props.json"
+    "config.json"
   ],
   "attributes": {
     "lastModification": {
       "actor": "LiewFam",
-      "timestamp": "2025-05-10T03:31:17Z"
+      "timestamp": "2025-05-10T03:50:07Z"
     },
-    "lastModificationSignature": "28a8ec8c718a90b462b7f4669904d08dff224d848c96060ea6992cc44083e527"
+    "lastModificationSignature": "575399991345995af0cb7ec59510a09f9ce20982d456a879d28618ffceef86a8"
   }
 }

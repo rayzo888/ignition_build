@@ -42,7 +42,20 @@ def browseTag(tagPath):
 		else:
 			pathList.append(str(path['fullPath']))
 	return pathList
-	
+
+def browseHistoricalTags(path):
+	'''
+	This methods browse contents of certain tag path and return what's inside. (historical tagpaths only)
+	Return a pathlist of all the contents for that certain tag, in one list.
+	'''
+	histPaths = []
+	for result in system.tag.browseHistoricalTags(path).getResults():
+		if result.hasChildren():
+			histPaths += browseHistoricalTags(result.getPath())
+		else:
+			histPaths.append(result.getPath())
+	return histPaths
+
 def formatToWritableList(rootPath, returnData, browsedTagPath):
 	'''
 	This methods return path and values formatted for system.tag.writeBlocking functions

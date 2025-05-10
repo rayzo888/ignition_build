@@ -4,13 +4,14 @@
   "restricted": false,
   "overridable": true,
   "files": [
-    "props.json"
+    "view.json",
+    "thumbnail.png"
   ],
   "attributes": {
     "lastModification": {
       "actor": "LiewFam",
-      "timestamp": "2025-05-10T03:31:17Z"
+      "timestamp": "2025-05-10T17:09:59Z"
     },
-    "lastModificationSignature": "28a8ec8c718a90b462b7f4669904d08dff224d848c96060ea6992cc44083e527"
+    "lastModificationSignature": "b80d060b096d28f430b64e834021fdef3f2fe29e3b0a514d951a34ba83885fc2"
   }
 }

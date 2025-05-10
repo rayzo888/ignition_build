@@ -1,0 +1,66 @@
+{
+  "custom": {},
+  "params": {},
+  "props": {},
+  "root": {
+    "children": [
+      {
+        "meta": {
+          "name": "Table"
+        },
+        "position": {
+          "basis": "400px",
+          "grow": 1
+        },
+        "propConfig": {
+          "props.data": {
+            "binding": {
+              "config": {
+                "expression": "true"
+              },
+              "transforms": [
+                {
+                  "code": "\tdateNow \u003d system.date.now()\n\tstartDate \u003d system.date.addHours(dateNow, -2)\n\tendDate \u003d dateNow\n\t\n\ttagPath \u003d \u0027\u0027\n\thistPaths \u003d g_script.tags.browseHistoricalTags(tagPath)[1:]\n\tcolNames \u003d utility.special.convertHistTagPathsToNames(histPaths)\n\tds \u003d system.tag.queryTagHistory(paths\u003dhistPaths, startDate\u003dstartDate, endDate\u003dendDate, aggregationMode\u003d\u0027Average\u0027, columnNames\u003dcolNames,ignoreBadQuality\u003dTrue)\n\t\n\t\n\treturn g_script.typeConversion.ignDsToTableDict(ds)",
+                  "type": "script"
+                }
+              ],
+              "type": "expr"
+            }
+          }
+        },
+        "props": {
+          "selection": {
+            "data": [
+              {
+                "hpa_value": null,
+                "humidity_value": null,
+                "iaq_temperature_value": null,
+                "iaq_value": null,
+                "t_stamp": {
+                  "$": [
+                    "ts",
+                    0,
+                    1746896998224
+                  ],
+                  "$ts": 1746896698527
+                },
+                "tvoc_value": null,
+                "zzplayground_simulationvalue": 99
+              }
+            ],
+            "selectedColumn": "hpa_value",
+            "selectedRow": 8
+          }
+        },
+        "type": "ia.display.table"
+      }
+    ],
+    "meta": {
+      "name": "root"
+    },
+    "props": {
+      "direction": "column"
+    },
+    "type": "ia.container.flex"
+  }
+}
