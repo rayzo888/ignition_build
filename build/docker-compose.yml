@@ -44,6 +44,7 @@ services:
       - ../tags:/usr/local/bin/ignition/data/tags
       - ../leased-activation:/usr/local/bin/ignition/data/leased-activation
       - ../config/ignition.conf:/usr/local/bin/ignition/data/ignition.conf
+      - ../custom-lib:/usr/local/bin/ignition/data/custom-lib
     environment:
       - ACCEPT_IGNITION_EULA=Y
       - IGNITION_EDITION=maker
